@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#010a0f">
+<script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.className="anim";setTimeout(function(){document.documentElement.classList.remove("anim")},3200);}</script>
+<title>SeaCrates — Find Your Deepest Seacrates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6EEE4; --paper:#FFFBF5; --ink:#14262B; --body:#455559;
+  --sea:#0E4A57; --sea2:#14697A; --gold:#A67B5B; --gold-soft:#E9D8C4;
+  --line:rgba(20,38,43,.12); --glass:rgba(255,255,255,.72);
+  --shadow:0 14px 34px rgba(60,40,20,.10); --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--body);font:400 16px/1.8 "Be Vietnam Pro",sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+img{display:block;width:100%;height:100%;object-fit:cover}
+h1,h2,h3,h4{font-family:"Playfair Display",serif;color:var(--ink);font-weight:600;line-height:1.2}
+:focus-visible{outline:2px solid var(--sea2);outline-offset:3px}
+::selection{background:var(--gold);color:#fff}
+
+/* nền + bọt khí nhẹ */
+.bg{position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(60vw 60vw at 0% 0%,#EFDCC6 0%,transparent 70%),
+  radial-gradient(55vw 55vw at 100% 100%,#D9E6E4 0%,transparent 70%),var(--bg)}
+.bubbles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bubble{position:absolute;bottom:-30px;border-radius:50%;border:1px solid rgba(14,74,87,.18);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),rgba(255,255,255,.1));animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-110vh) translateX(24px);opacity:0}}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--sea2);z-index:300}
+
+.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+.section{padding:110px 0}
+.head{max-width:680px;margin-bottom:52px}
+.head h2{font-size:clamp(34px,4.6vw,54px);margin-bottom:14px}
+.head p{font-size:16px}
+.tag{display:inline-block;font:500 13px "Be Vietnam Pro";color:var(--gold);margin-bottom:14px}
+.center{text-align:center;margin-inline:auto}
+
+/* nút */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 30px;border-radius:999px;border:1px solid var(--sea);font-weight:500;font-size:15px;cursor:pointer;transition:.35s var(--ease)}
+.btn-primary{background:var(--sea);color:#fff;box-shadow:0 10px 24px rgba(14,74,87,.25)}
+.btn-primary:hover{background:var(--sea2);transform:translateY(-3px);box-shadow:0 16px 30px rgba(14,74,87,.3)}
+.btn-ghost{background:transparent;color:var(--sea)}
+.btn-ghost:hover{background:var(--sea);color:#fff;transform:translateY(-3px)}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto;z-index:100;padding:14px 0;transition:.4s var(--ease)}
+.nav.scrolled{background:rgba(255,251,245,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{width:60px;height:60px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 0 0 2px var(--gold),0 8px 20px rgba(60,40,20,.2);flex-shrink:0;transition:.4s var(--ease)}
+.logo:hover{transform:rotate(-6deg) scale(1.06)}
+.links{display:flex;gap:28px;align-items:center}
+.links a{font-size:14.5px;font-weight:500;color:var(--body);position:relative;padding:6px 0;transition:color .3s}
+.links a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--gold);transition:width .4s var(--ease)}
+.links a:hover{color:var(--sea)}.links a:hover::after{width:100%}
+.menu{display:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--glass);font-size:20px;cursor:pointer}
+
+/* hero */
+.hero{min-height:100svh;display:flex;align-items:center;padding:130px 0 80px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(46px,6.6vw,88px);letter-spacing:-.02em;margin-bottom:22px}
+.hero h1 em{display:block;color:var(--sea);font-style:italic}
+.hero-sub{max-width:520px;font-size:17px;margin-bottom:34px}
+.actions{display:flex;gap:14px;flex-wrap:wrap}
+.hero-media{position:relative;aspect-ratio:4/5;border-radius:240px 240px 24px 24px;overflow:hidden;box-shadow:var(--shadow);border:6px solid #fff}
+.hero-media img{transition:transform 1.6s var(--ease)}
+.hero-media:hover img{transform:scale(1.05)}
+.hero-chip{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);white-space:nowrap;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #fff;border-radius:999px;padding:10px 20px;font-size:13.5px;font-weight:500;color:var(--ink)}
+
+/* thẻ bấm để mở (dùng chung) */
+.xp{background:var(--glass);border:1px solid #fff;border-radius:18px;box-shadow:var(--shadow);transition:.4s var(--ease)}
+.xp:hover{transform:translateY(-4px);border-color:var(--gold)}
+.xp.open{background:var(--paper);border-color:var(--gold)}
+.xp-h{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 26px;background:none;border:0;text-align:left;cursor:pointer}
+.xp-h h3,.xp-h h4{font-size:22px}
+.xp-h small{display:block;font:400 13.5px "Be Vietnam Pro";color:var(--gold);margin-top:2px}
+.pl{flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:grid;place-items:center;font-size:18px;line-height:1;transition:.4s var(--ease)}
+.xp:hover .pl{background:var(--gold);color:#fff}
+.xp.open .pl{transform:rotate(45deg);background:var(--gold);color:#fff}
+.xp-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s var(--ease)}
+.xp.open .xp-b{grid-template-rows:1fr}
+.xp-b>div{overflow:hidden}
+.xp-b p{padding:0 26px 24px;font-size:15px;opacity:0;transform:translateY(-6px);transition:.45s var(--ease)}
+.xp.open .xp-b p{opacity:1;transform:none;transition-delay:.12s}
+.hint{font-size:13px;color:var(--gold);padding:0 26px 18px;margin-top:-8px}
+.xp.open .hint{display:none}
+
+/* khái niệm */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.story-img{aspect-ratio:4/5;max-height:600px;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);position:relative;border:6px solid #fff}
+.story-label{position:absolute;left:18px;right:18px;bottom:18px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:14px;padding:14px 18px}
+.story-label span{font-size:13px;color:var(--gold)}.story-label strong{display:block;font:600 22px "Playfair Display";color:var(--ink)}
+.stack{display:grid;gap:14px;margin-top:28px}
+
+/* rương báu: điểm nhấn duy nhất */
+.treasure-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.badge{display:inline-block;font-size:12.5px;font-weight:500;padding:5px 14px;border-radius:999px;background:var(--gold-soft);color:#6d4a30;margin:24px 26px 0}
+.treasure-grid .xp-h{padding-top:12px}
+.xp.premium{background:linear-gradient(150deg,var(--sea),#0A3640);border-color:var(--sea);color:#D6E6E7}
+.xp.premium h4{color:#F3DFA8}
+.xp.premium .badge{background:#F3DFA8;color:#4a3410}
+.xp.premium .pl{border-color:#F3DFA8;color:#F3DFA8}
+.xp.premium:hover .pl,.xp.premium.open .pl{background:#F3DFA8;color:var(--sea)}
+.xp.premium .hint{color:#F3DFA8}
+
+/* hành trình */
+.timeline{position:relative;max-width:760px;display:grid;gap:14px;padding-left:44px}
+.timeline::before{content:"";position:absolute;left:14px;top:12px;bottom:12px;width:2px;background:linear-gradient(var(--gold),var(--sea2));opacity:.4}
+.timeline .xp{position:relative}
+.timeline .xp::before{content:"";position:absolute;left:-37px;top:28px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);transition:.3s}
+.timeline .xp.open::before{background:var(--sea2);border-color:var(--sea2);animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(20,105,122,.4)}70%,100%{box-shadow:0 0 0 12px rgba(20,105,122,0)}}
+.time{font:500 13px "Be Vietnam Pro";color:var(--sea2);display:block;margin-bottom:2px}
+
+/* gói */
+.pk-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+.pk{padding:44px 38px;display:flex;flex-direction:column;position:relative}
+.pk:hover{transform:translateY(-6px)}
+.pk.featured{background:var(--paper);border:2px solid var(--gold)}
+.pk-badge{position:absolute;top:20px;right:20px;font-size:12.5px;font-weight:500;background:var(--gold);color:#fff;border-radius:999px;padding:4px 14px}
+.pk .lbl{font-size:13.5px;color:var(--gold);font-weight:500}
+.pk h3{font-size:36px;margin:8px 0 6px}
+.price{font:600 34px "Playfair Display";color:var(--sea)}
+.price small{font:400 13px "Be Vietnam Pro";color:var(--body);margin-left:4px}
+.pk p{margin:16px 0 26px;font-size:15px;flex:1}
+.tabs{display:inline-flex;gap:6px;padding:5px;background:var(--glass);border:1px solid #fff;border-radius:999px;margin-bottom:18px}
+.tab{border:0;background:none;padding:10px 24px;border-radius:999px;cursor:pointer;font-weight:500;font-size:14.5px;transition:.3s}
+.tab[aria-selected=true]{background:var(--sea);color:#fff}
+.panel{display:none;background:var(--glass);border:1px solid #fff;border-radius:18px;padding:12px 28px;box-shadow:var(--shadow)}
+.panel.on{display:block;animation:fade .5s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.panel li{list-style:none;display:flex;gap:14px;padding:12px 0;font-size:15px;border-bottom:1px solid var(--line)}
+.panel li:last-child{border:0}
+.panel i{font-style:normal;color:var(--sea2);font-weight:600}
+.panel.no i{color:var(--gold)}
+
+/* an toàn */
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+.trust .xp-h{flex-direction:column;align-items:flex-start;gap:10px}
+.trust .ico{font-size:34px}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.gallery div{height:320px;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);border:5px solid #fff}
+.gallery img{transition:transform .9s var(--ease)}.gallery div:hover img{transform:scale(1.05)}
+
+/* cta + footer */
+.cta{padding:100px 0;text-align:center}
+.cta-box{background:linear-gradient(150deg,var(--sea),#0A3640);border-radius:32px;padding:80px 28px;color:#D6E6E7}
+.cta-box h2{color:#fff;font-size:clamp(32px,4.8vw,56px);margin-bottom:16px}
+.cta-box p{max-width:520px;margin:0 auto 32px}
+.cta-box .btn{background:#F3DFA8;border-color:#F3DFA8;color:#3d2c0a}
+.footer{padding:70px 0 30px;border-top:1px solid var(--line)}
+.f-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:40px}
+.footer h4{font:600 16px "Be Vietnam Pro";color:var(--ink);margin-bottom:14px}
+.footer p,.footer a{display:block;font-size:14.5px;line-height:2.1}
+.footer a:hover{color:var(--sea2)}
+.f-logo{width:96px;height:96px;border-radius:50%;overflow:hidden;border:4px solid #fff;box-shadow:0 0 0 2px var(--gold);margin-bottom:18px}
+.social{display:flex;gap:12px;margin-top:18px}
+.social a{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--glass);display:grid;place-items:center;color:var(--gold);transition:.35s var(--ease)}
+.social a:hover{background:var(--gold);color:#fff;transform:translateY(-4px)}
+.social svg{width:18px;height:18px;fill:currentColor}
+.copy{margin-top:50px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;text-align:center;opacity:.7}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,38,43,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.modal.open{display:flex;animation:fade .35s}
+.mbox{position:relative;width:min(560px,100%);max-height:92svh;overflow-y:auto;background:linear-gradient(150deg,#fffdf9,#f3e8dc);border:1px solid #fff;border-radius:24px;padding:44px 36px 34px;box-shadow:0 30px 80px rgba(20,38,43,.35)}
+.mbox.wide{width:min(820px,100%)}
+.mbox h3{font-size:34px;margin:6px 0 8px}.mbox>p{font-size:15px;margin-bottom:22px}
+.x{position:absolute;right:18px;top:16px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:22px;line-height:1;cursor:pointer;transition:.3s}
+.x:hover{background:var(--ink);color:#fff;transform:rotate(90deg)}
+.form{display:grid;gap:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form input,.form select{width:100%;height:52px;padding:0 16px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.85);font:inherit;font-size:15px;color:var(--ink)}
+.form input:focus,.form select:focus{outline:none;border-color:var(--sea2);box-shadow:0 0 0 3px rgba(20,105,122,.15)}
+.chk{display:flex;gap:12px;align-items:flex-start;font-size:14px}.chk input{width:18px;height:18px;margin-top:5px;accent-color:var(--sea)}
+.form .btn{width:100%;margin-top:6px}
+.policy h4{font:600 22px "Playfair Display";margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.policy p,.policy li{font-size:15px;margin-bottom:10px}
+.policy ul{list-style:none}.policy li{padding-left:20px;position:relative}.policy li::before{content:"✦";position:absolute;left:0;color:var(--gold);font-size:12px;top:2px}
+.policy b{color:var(--ink);font-weight:600}
+.pay-qr{display:inline-block;background:#fff;padding:12px;border-radius:12px;margin-bottom:18px;box-shadow:var(--shadow)}
+.pay-qr img{width:230px;height:auto}
+.pay-info{display:grid;gap:8px;text-align:left;border:1px solid var(--gold);border-radius:12px;padding:16px 20px}
+.pay-info div{display:flex;justify-content:space-between;gap:16px;font-size:14px}
+.pay-info strong{color:var(--sea);text-align:right;word-break:break-word}
+
+.rv{opacity:0;transform:translateY(34px);transition:1s var(--ease)}.rv.show{opacity:1;transform:none}
+@media(max-width:900px){
+  .links,.nav>.wrap>.btn{display:none}.menu{display:block}
+  .nav.open .links{display:flex;position:absolute;top:84px;left:20px;right:20px;flex-direction:column;align-items:stretch;gap:0;padding:8px 22px;background:rgba(255,251,245,.97);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+  .nav.open .links a{padding:15px 0;border-bottom:1px solid var(--line)}.nav.open .links a:last-child{border:0}
+  .hero .wrap,.grid2,.treasure-grid,.pk-grid,.trust,.gallery{grid-template-columns:1fr}
+  .hero{padding-top:110px}.hero-media{max-width:420px;margin:auto;width:100%}
+  .section{padding:80px 0}.f-grid{grid-template-columns:1fr 1fr}
+  .story-img{aspect-ratio:4/3}.bubble:nth-child(n+7){display:none}
+}
+@media(max-width:560px){
+  .actions .btn{width:100%}.row{grid-template-columns:1fr}.f-grid{grid-template-columns:1fr}
+  .pk{padding:34px 24px}.mbox{padding:40px 22px 26px}.gallery div{height:240px}
+  .timeline{padding-left:34px}.timeline .xp::before{left:-27px}.timeline::before{left:9px}
+  input,select{font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}.rv{opacity:1;transform:none}}
+
+/* ===== OCEAN THEME ===== */
+:root{--bg:#031a24;--paper:#0c3745;--ink:#EAF6F6;--body:#A9C6CB;--sea:#5ED0D6;--sea2:#8fe3e6;--gold:#E9C98A;--gold-soft:rgba(233,201,138,.16);
+ --line:rgba(160,225,232,.16);--glass:rgba(9,48,62,.58);--shadow:0 18px 40px rgba(0,8,14,.45)}
+::selection{background:var(--sea);color:#031a24}
+.bg{background:linear-gradient(180deg,#0b5a70 0%,#06374a 28%,#032633 62%,#01121a 100%);overflow:hidden}
+.bg::before{content:"";position:absolute;inset:-20%;background:
+ conic-gradient(from 195deg at 30% -10%,transparent 0 8%,rgba(150,235,240,.13) 11%,transparent 15% 30%,rgba(150,235,240,.10) 33%,transparent 38% 100%),
+ conic-gradient(from 170deg at 75% -15%,transparent 0 10%,rgba(150,235,240,.10) 14%,transparent 19% 100%);
+ animation:rays 18s ease-in-out infinite alternate}
+@keyframes rays{from{transform:rotate(-4deg) translateX(-2%)}to{transform:rotate(4deg) translateX(2%)}}
+.bg::after{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:screen;background:
+ radial-gradient(40% 30% at 20% 30%,rgba(94,208,214,.14),transparent 70%),
+ radial-gradient(35% 28% at 80% 60%,rgba(94,208,214,.12),transparent 70%);
+ animation:drift 22s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(-3%,2%) scale(1)}to{transform:translate(3%,-3%) scale(1.15)}}
+.waves{position:fixed;left:0;right:0;bottom:0;height:22vh;z-index:-1;pointer-events:none;overflow:hidden}
+.waves i{position:absolute;left:0;bottom:0;width:200%;height:100%;background-repeat:repeat-x;background-size:50% 100%;animation:wave linear infinite}
+.waves i:nth-child(1){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%235ED0D6' fill-opacity='.10' d='M0 60 C150 10 300 110 450 60 C600 10 750 110 900 60 C1050 10 1150 90 1200 60 V120 H0Z'/%3E%3C/svg%3E");animation-duration:22s}
+.waves i:nth-child(2){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%2331a5b4' fill-opacity='.10' d='M0 60 C150 10 300 110 450 60 C600 10 750 110 900 60 C1050 10 1150 90 1200 60 V120 H0Z'/%3E%3C/svg%3E");animation-duration:32s;animation-direction:reverse;height:80%}
+.waves i:nth-child(3){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%2308303f' fill-opacity='.55' d='M0 60 C150 10 300 110 450 60 C600 10 750 110 900 60 C1050 10 1150 90 1200 60 V120 H0Z'/%3E%3C/svg%3E");animation-duration:44s;height:55%}
+@keyframes wave{to{transform:translateX(-50%)}}
+.bubble{border-color:rgba(190,240,245,.35);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.04))}
+.progress{background:linear-gradient(90deg,var(--sea),var(--gold))}
+.nav.scrolled{background:rgba(3,26,36,.78)}
+.logo,.f-logo{border-color:#0c3745;box-shadow:0 0 0 2px var(--gold),0 8px 22px rgba(0,0,0,.45)}
+.btn-primary{background:linear-gradient(135deg,#5ED0D6,#35a9b8);color:#02242e;border-color:transparent;box-shadow:0 10px 26px rgba(94,208,214,.28)}
+.btn-primary:hover{background:linear-gradient(135deg,#8fe3e6,#5ED0D6);box-shadow:0 16px 34px rgba(94,208,214,.4)}
+.btn-ghost{color:var(--sea);border-color:rgba(94,208,214,.55)}.btn-ghost:hover{background:var(--sea);color:#02242e}
+.links a:hover,.footer a:hover{color:var(--sea)}
+.hero-media,.story-img,.gallery div{border:1px solid var(--line);box-shadow:var(--shadow),0 0 0 6px rgba(94,208,214,.07)}
+.hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(3,26,36,.55));pointer-events:none}
+.hero-chip{z-index:2}
+.hero-chip,.story-label{background:rgba(5,34,46,.7);border-color:var(--line);color:var(--ink)}
+.hero h1 em{color:var(--sea);text-shadow:0 0 40px rgba(94,208,214,.35)}
+.xp,.tabs,.panel{border-color:var(--line)}
+.xp:hover,.xp.open{border-color:rgba(233,201,138,.6)}
+.xp.open{background:rgba(12,55,69,.85)}
+.badge{color:var(--gold)}
+.xp.premium,.cta-box{background:linear-gradient(150deg,#0d5a6b,#06303d);border-color:rgba(233,201,138,.55);color:#cfe6e8;box-shadow:var(--shadow),0 0 50px rgba(94,208,214,.15)}
+.xp.premium h4,.xp.premium .badge{color:#F3DFA8}.xp.premium .badge{background:rgba(243,223,168,.16)}
+.xp.premium:hover .pl,.xp.premium.open .pl{color:#06303d}
+.cta-box .btn{background:#F3DFA8;color:#3d2c0a}
+.pk.featured{background:rgba(12,55,69,.85);border-color:var(--gold)}
+.pk-badge{color:#2d2108}
+.tab[aria-selected=true]{background:var(--sea);color:#02242e}
+.time{color:var(--sea)}
+.timeline .xp::before{background:#06303d}
+.timeline .xp.open::before{background:var(--sea);border-color:var(--sea)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(94,208,214,.5)}70%,100%{box-shadow:0 0 0 12px rgba(94,208,214,0)}}
+.footer{background:rgba(2,16,23,.55);backdrop-filter:blur(6px)}
+.social a{border-color:var(--line)}
+.modal{background:rgba(1,12,18,.72)}
+.mbox{background:linear-gradient(150deg,#0b3a49,#04212c);border-color:var(--line);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.x{background:rgba(255,255,255,.08);color:var(--ink);border-color:var(--line)}.x:hover{background:var(--sea);color:#02242e}
+.form input,.form select{background:rgba(2,22,30,.7);color:var(--ink);border-color:var(--line)}
+.form input::placeholder{color:#7da3a9}
+.form input:focus,.form select:focus{border-color:var(--sea);box-shadow:0 0 0 3px rgba(94,208,214,.18)}
+.form option{background:#06303d}
+input[type=date]{color-scheme:dark}
+.pay-info{border-color:rgba(233,201,138,.5)}
+@media(max-width:900px){.nav.open .links{background:rgba(3,26,36,.97)}.waves{height:16vh}}
+
+/* ===== MULTI-PALETTE: đại dương + tàu đắm + san hô + cát ===== */
+:root{--coral:#4fd1c5;--coral2:#8de5db;--wood:#4A2F1D;--wood-d:#2B1A10;--sand:#F1E0BC;--foam:#7FE0D0;
+ --sea:#7FE0D0;--sea2:#b6f1e7;--gold:#EBCB8B;--line:rgba(255,255,255,.2);--glass:rgba(255,255,255,.09)}
+.bg{background:radial-gradient(60vw 40vw at 85% -5%,rgba(255,205,140,.32),transparent 70%),
+ linear-gradient(180deg,#1aa3b3 0%,#0e7389 24%,#07485c 55%,#032c3b 82%,#021a24 100%)}
+.waves i:nth-child(1){opacity:.9}
+.waves i:nth-child(3){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%23b98a57' fill-opacity='.45' d='M0 60 C150 10 300 110 450 60 C600 10 750 110 900 60 C1050 10 1150 90 1200 60 V120 H0Z'/%3E%3C/svg%3E")}
+.tag{color:var(--coral2);font-weight:600}
+.links a:hover,.footer a:hover{color:var(--coral2)}.links a::after{background:var(--coral)}
+.btn-primary{background:linear-gradient(135deg,#f6d365,#c79a47);color:#fff;box-shadow:0 10px 26px rgba(42,168,159,.38)}
+.btn-primary:hover{background:linear-gradient(135deg,#ffe08a,#d4a84f);box-shadow:0 16px 34px rgba(42,168,159,.5)}
+.btn-ghost{color:var(--sand);border-color:rgba(241,224,188,.6)}.btn-ghost:hover{background:var(--sand);color:var(--wood-d)}
+.progress{background:linear-gradient(90deg,var(--foam),var(--gold),var(--coral))}
+.hero h1 em{color:var(--coral2);text-shadow:0 4px 30px rgba(79,209,197,.35)}
+.hero-chip,.story-label{background:rgba(43,26,16,.62);border-color:rgba(241,224,188,.35)}
+.hero-media,.story-img,.gallery div{box-shadow:var(--shadow),0 0 0 6px rgba(241,224,188,.14);border-color:rgba(241,224,188,.4)}
+
+/* thẻ sáng hơn nền */
+.xp{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.24)}
+.xp.open{background:rgba(255,255,255,.17);border-color:var(--gold)}
+.pl{border-color:var(--coral2);color:var(--coral2)}
+.xp:hover .pl,.xp.open .pl{background:var(--coral);border-color:var(--coral);color:#fff}
+.hint{color:var(--coral2)}.xp-h small{color:var(--gold)}
+
+/* dải màu theo từng khu vực */
+#treasure{background:linear-gradient(180deg,transparent,rgba(74,47,29,.88) 14%,rgba(43,26,16,.92) 86%,transparent);
+ position:relative}
+#treasure::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+ background:repeating-linear-gradient(90deg,transparent 0 118px,rgba(0,0,0,.28) 118px 120px)}
+#treasure .wrap{position:relative}
+#itinerary{background:linear-gradient(180deg,transparent,rgba(127,224,208,.13) 20%,rgba(20,120,140,.2) 80%,transparent)}
+#packages{background:linear-gradient(180deg,transparent,rgba(79,209,197,.12) 20%,rgba(141,229,219,.08) 80%,transparent)}
+#safety{background:linear-gradient(180deg,transparent,rgba(5,30,44,.55) 18%,rgba(5,30,44,.55) 82%,transparent)}
+
+/* rương */
+.treasure-grid .xp:not(.premium){background:linear-gradient(160deg,rgba(79,209,197,.3),rgba(8,60,72,.5));border-color:var(--coral)}
+.treasure-grid .xp:not(.premium) .badge{background:var(--coral);color:#fff}
+.xp.premium{background:linear-gradient(150deg,#0f5666,#06222e);border:1.5px solid var(--gold);color:#ead9bd;box-shadow:var(--shadow),0 0 60px rgba(235,203,139,.28)}
+.xp.premium h4{color:#FFE9A8}.xp.premium small{color:#e6d3ae!important}
+.xp.premium .badge{background:var(--gold);color:#3d2c0a}
+.xp.premium .pl{border-color:var(--gold);color:var(--gold)}
+.xp.premium:hover .pl,.xp.premium.open .pl{background:var(--gold);color:#3d2c0a;border-color:var(--gold)}
+
+/* hành trình */
+.timeline::before{background:linear-gradient(var(--foam),var(--coral));opacity:.7}
+.timeline .xp{background:rgba(255,255,255,.1)}
+.timeline .xp::before{background:#0b5a70;border-color:var(--foam)}
+.timeline .xp.open::before{background:var(--coral);border-color:var(--coral)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(79,209,197,.55)}70%,100%{box-shadow:0 0 0 12px rgba(79,209,197,0)}}
+.time{color:var(--foam)}
+
+/* gói: giấy da cát + gỗ tàu */
+.pk:not(.featured){--ink:#2a1a0e;--body:#5a4430;background:linear-gradient(160deg,#F8EBCF,#E6CF9F);border-color:#fff3d6}
+.pk:not(.featured) .lbl{color:#B2452F}.pk:not(.featured) .price{color:#C94B3A}.pk:not(.featured) .price small{color:#6a5238}
+.pk:not(.featured) .btn-ghost{color:var(--wood);border-color:var(--wood)}.pk:not(.featured) .btn-ghost:hover{background:var(--wood);color:#fff}
+.pk.featured{background:linear-gradient(160deg,#5a3a24,#2b1a10);border:2px solid var(--gold);box-shadow:var(--shadow),0 0 50px rgba(235,203,139,.22)}
+.pk.featured .price{color:var(--gold)}.pk.featured .lbl{color:var(--coral2)}
+.pk-badge{background:var(--coral);color:#fff}
+.tab[aria-selected=true]{background:var(--coral);color:#fff}
+.panel{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22)}
+.panel i{color:var(--foam)}.panel.no i{color:var(--coral2)}
+
+/* an toàn */
+.trust .xp{background:linear-gradient(160deg,rgba(127,224,208,.22),rgba(14,115,137,.3));border-color:rgba(127,224,208,.5)}
+.trust .xp.open{border-color:var(--foam)}
+
+/* cta + footer */
+.cta-box{background:linear-gradient(135deg,#0f6b7a 0%,#0a4a5e 50%,#06222e 100%);border:0;color:#eafcfa;box-shadow:var(--shadow),0 0 70px rgba(79,209,197,.3)}
+.cta-box h2{color:#fff;text-shadow:0 3px 18px rgba(60,20,10,.4)}
+.cta-box .btn{background:var(--sand);color:var(--wood-d)}.cta-box .btn:hover{background:#fff}
+.footer{background:rgba(30,18,10,.78);border-top:1px solid rgba(235,203,139,.3)}
+.social a{color:var(--gold)}.social a:hover{background:var(--coral);color:#fff}
+.logo,.f-logo{border-color:var(--wood-d)}
+
+/* modal */
+.mbox{background:linear-gradient(150deg,#0e5266,#2a1a10);border-color:rgba(235,203,139,.4)}
+.form input:focus,.form select:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(79,209,197,.22)}
+.x:hover{background:var(--coral);color:#fff}
+.pay-info strong{color:var(--gold)}.policy h4{color:var(--sand)}.policy b{color:#fff}
+@media(max-width:900px){.nav.open .links{background:rgba(43,26,16,.97)}}
+
+/* ===== THANH TOÁN QR ===== */
+#pay{background:linear-gradient(180deg,transparent,rgba(235,203,139,.08) 20%,rgba(5,30,44,.4) 80%,transparent)}
+.qp-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;max-width:980px;margin:auto}
+.qp-card{padding:34px 32px}
+.qp-card:hover{transform:none}
+.qp-card label{display:block;font:600 12.5px "Be Vietnam Pro";letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.qp-amt{position:relative;margin-bottom:14px}
+.qp-amt input{width:100%;height:64px;padding:0 44px 0 20px;border:1px solid var(--line);border-radius:12px;background:rgba(2,22,30,.55);color:var(--ink);font:600 26px "Playfair Display",serif}
+.qp-amt input::placeholder{color:#7da3a9;font-weight:500}
+.qp-amt span{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px}
+.qp-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.qp-chip{min-height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--gold);font-size:14px;font-weight:500;cursor:pointer;transition:.3s var(--ease)}
+.qp-chip:hover,.qp-chip.on{background:var(--coral);border-color:var(--coral);color:#fff}
+.qp-card textarea{width:100%;min-height:120px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:rgba(2,22,30,.55);color:var(--ink);font:inherit;font-size:15px;line-height:1.7;resize:vertical;margin-bottom:22px}
+.qp-card textarea::placeholder{color:#7da3a9}
+.qp-amt input:focus,.qp-card textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(79,209,197,.22)}
+.qp-card .btn{width:100%}
+.qp-note{margin-top:16px;font-size:13.5px;text-align:center}
+.qp-note b{color:var(--ink)}
+.qp-out{min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.qp-empty svg{width:64px;height:64px;stroke:var(--gold);fill:none;stroke-width:1.6;opacity:.85;margin-bottom:14px}
+.qp-empty p,.qp-msg{font-size:15px}
+/* thẻ QR thiết kế riêng */
+.qr-card{width:100%;max-width:300px;margin:0 auto;padding:18px 18px 18px;border-radius:26px;position:relative;background:linear-gradient(160deg,rgba(255,255,255,.17),rgba(255,255,255,.05));box-shadow:var(--shadow),0 0 46px rgba(127,224,208,.2)}
+.qr-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(135deg,var(--gold),var(--foam) 50%,var(--coral));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.qr-top{display:flex;justify-content:space-between;align-items:center;font:600 11px "Be Vietnam Pro";letter-spacing:.16em;color:var(--gold);margin:0 4px 14px}
+.qr-top span:last-child{color:var(--foam)}
+.qr-frame{position:relative;background:#fff;border-radius:18px;padding:18px;overflow:hidden}
+.qr-img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain}
+.qr-frame::after{content:"";position:absolute;inset:7px;border-radius:12px;pointer-events:none;background:
+ linear-gradient(var(--coral),var(--coral)) 0 0/22px 3px no-repeat,linear-gradient(var(--coral),var(--coral)) 0 0/3px 22px no-repeat,
+ linear-gradient(var(--coral),var(--coral)) 100% 0/22px 3px no-repeat,linear-gradient(var(--coral),var(--coral)) 100% 0/3px 22px no-repeat,
+ linear-gradient(var(--coral),var(--coral)) 0 100%/22px 3px no-repeat,linear-gradient(var(--coral),var(--coral)) 0 100%/3px 22px no-repeat,
+ linear-gradient(var(--coral),var(--coral)) 100% 100%/22px 3px no-repeat,linear-gradient(var(--coral),var(--coral)) 100% 100%/3px 22px no-repeat}
+.qr-scan{position:absolute;left:18px;right:18px;top:18px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--coral),transparent);box-shadow:0 0 12px var(--coral);opacity:.75;animation:qrscan 3.4s ease-in-out infinite alternate;pointer-events:none}
+@keyframes qrscan{to{top:calc(100% - 20px)}}
+.qr-bank{margin-top:16px;text-align:center}
+.qr-bank strong{display:block;font:600 18px "Playfair Display",serif;color:var(--ink);letter-spacing:.05em}
+.qr-bank span{display:block;font:500 15px/1.7 "Be Vietnam Pro";color:var(--gold);letter-spacing:.14em}
+.qr-bank small{display:block;font-size:12px;color:var(--body);letter-spacing:.08em;text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){.qr-scan{display:none}}
+.qp-info{width:100%;display:grid;gap:8px;text-align:left;border:1px solid rgba(233,201,138,.5);border-radius:12px;padding:14px 18px}
+.qp-info div{display:flex;justify-content:space-between;gap:16px;font-size:14px}
+.qp-info strong{color:var(--gold);text-align:right;word-break:break-word}
+.qp-out .btn{min-height:46px;width:100%}
+@media(max-width:900px){.qp-grid{grid-template-columns:1fr}.qp-out{min-height:340px}}
+@media(max-width:560px){.qp-card{padding:28px 22px}.qp-amt input{font-size:22px}}
+
+/* ===== DEEP SEA: biển sâu, tối và thẳm hơn ===== */
+.bg{background:radial-gradient(55vw 35vw at 85% -8%,rgba(94,208,214,.16),transparent 70%),
+ linear-gradient(180deg,#07384a 0%,#052a3a 22%,#031c29 50%,#020f18 78%,#01080d 100%)}
+.bg::before{opacity:.5}.bg::after{opacity:.3}
+.waves i:nth-child(1){opacity:.4}.waves i:nth-child(2){opacity:.55}
+.waves i:nth-child(3){background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%2304222d' fill-opacity='.75' d='M0 60 C150 10 300 110 450 60 C600 10 750 110 900 60 C1050 10 1150 90 1200 60 V120 H0Z'/%3E%3C/svg%3E")}
+.bubble{border-color:rgba(150,225,235,.22)}
+.nav.scrolled{background:rgba(1,12,18,.82)}
+.xp{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14)}
+.xp.open{background:rgba(255,255,255,.11)}
+.timeline .xp{background:rgba(255,255,255,.06)}
+.timeline .xp::before{background:#031c29}
+.panel{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+.trust .xp{background:linear-gradient(160deg,rgba(127,224,208,.12),rgba(14,115,137,.2));border-color:rgba(127,224,208,.32)}
+.treasure-grid .xp:not(.premium){background:linear-gradient(160deg,rgba(79,209,197,.2),rgba(6,40,52,.5))}
+#treasure{background:linear-gradient(180deg,transparent,rgba(43,26,16,.82) 14%,rgba(22,13,8,.9) 86%,transparent)}
+#itinerary{background:linear-gradient(180deg,transparent,rgba(127,224,208,.04) 20%,rgba(20,120,140,.08) 80%,transparent)}
+#packages{background:linear-gradient(180deg,transparent,rgba(79,209,197,.05) 20%,rgba(141,229,219,.03) 80%,transparent)}
+#safety{background:linear-gradient(180deg,transparent,rgba(1,10,15,.65) 18%,rgba(1,10,15,.65) 82%,transparent)}
+#pay{background:linear-gradient(180deg,transparent,rgba(235,203,139,.04) 20%,rgba(1,10,15,.5) 80%,transparent)}
+.pk:not(.featured){background:linear-gradient(160deg,#E7D3A6,#C9AC76)}
+.cta-box{background:linear-gradient(135deg,#d9604f 0%,#9c3b2c 45%,#2f1c10 100%)}
+.footer{background:rgba(2,10,14,.88)}
+.mbox{background:linear-gradient(150deg,#08303d,#1b110a)}
+.qp-amt input,.qp-card textarea,.form input,.form select{background:rgba(0,10,15,.6)}
+@media(max-width:900px){.nav.open .links{background:rgba(2,14,20,.97)}}
+
+/* ===== THAM KHẢO seacrates.win: gần đen #010a0f, nhiều ảnh, nút ↗, dive deeper ===== */
+.bg{background:radial-gradient(50vw 30vw at 85% -8%,rgba(94,208,214,.10),transparent 70%),
+ linear-gradient(180deg,#052633 0%,#031a25 24%,#02111a 52%,#010a0f 82%,#010a0f 100%)}
+.btn[data-package]::after,.nav-in>.btn::after{content:"↗";font-size:1.05em;line-height:1;transition:transform .35s var(--ease)}
+.btn[data-package]:hover::after,.nav-in>.btn:hover::after{transform:translate(3px,-3px)}
+.hero{position:relative}
+.cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;font:500 11.5px "Be Vietnam Pro";letter-spacing:.22em;text-transform:uppercase;color:var(--gold);opacity:.85;transition:opacity .3s}
+.cue:hover{opacity:1}
+.cue span{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:cue 2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.band{height:44vh;min-height:260px;background:linear-gradient(180deg,#010a0f 0%,rgba(1,10,15,.35) 28%,rgba(1,10,15,.35) 72%,#010a0f 100%),url("pexels-mjlo-35175952.jpg") center/cover fixed no-repeat}
+@media(max-width:900px){.band{background-attachment:scroll;height:34vh}.cue{display:none}}
+@media(prefers-reduced-motion:reduce){.cue span{animation:none;transform:none}}
+
+/* ===== BẢNG MÀU ĐỒNG BỘ VỚI index-21 (seacrates.win): Abyss + Tàu đắm + Vàng + San hô ===== */
+:root{
+ --abyss:#010a0f;--ocean:#041a25;--water-depth:#082d3a;
+ --wreck-wood:#2a1b12;--wreck-light:#4a3121;
+ --gold-glint:#f6d365;--gold-rich:#c79a47;--sand:#d8c39b;
+ --coral:#4fd1c5;--coral2:#8de5db;
+ --ivory:#fdfbf7;--muted:#8cabae;
+ --bg:#010a0f;--paper:#041a25;--ink:#fdfbf7;--body:#8cabae;
+ --gold:#c79a47;--sea:#84c4d0;--sea2:#a9d6df;--foam:#84c4d0;--wood:#2a1b12;--wood-d:#2a1b12;
+ --line:rgba(232,195,123,.15);--glass:rgba(4,26,37,.65);--shadow:0 20px 50px rgba(0,0,0,.5)}
+body{background:var(--abyss);color:var(--ivory)}
+::selection{background:var(--gold-rich);color:var(--abyss)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--abyss)}
+::-webkit-scrollbar-thumb{background:var(--gold-rich);border-radius:10px}::-webkit-scrollbar-thumb:hover{background:var(--gold-glint)}
+.bg{background:var(--abyss);overflow:hidden}
+.bg::before{content:"";position:absolute;inset:-50% -50% auto -50%;width:200%;height:200%;background:conic-gradient(from 180deg at 50% 0%,transparent 40%,rgba(132,196,208,.03) 45%,rgba(246,211,101,.03) 50%,rgba(132,196,208,.03) 55%,transparent 60%);animation:rays 25s ease-in-out infinite alternate}
+.bg::after{display:none}
+.waves{display:none}
+.bubble{background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.15);box-shadow:0 0 10px rgba(255,255,255,.1)}
+.progress{background:linear-gradient(90deg,var(--gold-rich),var(--gold-glint),#fff);box-shadow:0 0 12px var(--gold-glint)}
+
+/* chữ */
+.tag{color:var(--gold-rich);text-shadow:0 0 15px rgba(199,154,71,.4)}
+.head h2,.hero h1{background:linear-gradient(180deg,#fff 20%,var(--sand) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1 em{color:var(--gold-glint);-webkit-text-fill-color:var(--gold-glint);text-shadow:none}
+.hero-sub{color:#a9c1c4}
+.head p{color:var(--muted)}
+.mbox h3,.pk h3,.xp-h h4,.xp-h h3{color:var(--ivory)}
+
+/* nav */
+.nav.scrolled{background:rgba(1,10,15,.85);border-bottom:1px solid rgba(232,195,123,.08);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.links a{color:#bac8ca}
+.links a:hover,.footer a:hover{color:var(--gold-glint);text-shadow:0 0 8px rgba(246,211,101,.5)}
+.links a::after{background:linear-gradient(90deg,var(--gold-rich),var(--gold-glint))}
+.logo,.f-logo{border:2px solid var(--gold-rich);box-shadow:0 0 25px rgba(199,154,71,.25),inset 0 0 20px rgba(0,0,0,.8);background:var(--wreck-wood)}
+.nav-in>.btn{border:1px solid rgba(199,154,71,.5);background:rgba(42,27,18,.3);color:var(--gold-rich);box-shadow:none}
+.nav-in>.btn:hover{background:var(--gold-rich);border-color:var(--gold-rich);color:var(--abyss);box-shadow:0 10px 25px rgba(199,154,71,.3)}
+.menu{color:var(--gold-rich);border-color:rgba(199,154,71,.4);background:rgba(4,26,37,.55)}
+.cue{color:var(--gold-rich)}
+
+/* nút */
+.btn-primary{background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);border:1px solid var(--gold-glint);box-shadow:0 15px 35px rgba(199,154,71,.25)}
+.btn-primary:hover{background:linear-gradient(135deg,var(--gold-glint),var(--gold-rich));box-shadow:0 20px 45px rgba(199,154,71,.4)}
+.btn-ghost{border-color:rgba(232,195,123,.4);color:var(--gold-glint);background:rgba(1,10,15,.4);backdrop-filter:blur(10px)}
+.btn-ghost:hover{border-color:var(--gold-glint);background:rgba(232,195,123,.08);color:var(--gold-glint);text-shadow:0 0 10px rgba(246,211,101,.5)}
+
+/* ảnh + nhãn */
+.hero-media,.story-img,.gallery div{border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.hero-chip,.story-label{background:rgba(1,10,15,.85);border:1px solid var(--gold-rich);color:var(--ivory);box-shadow:inset 0 0 20px rgba(199,154,71,.1)}
+.story-label span{color:var(--coral)}.story-label strong{color:var(--gold-glint)}
+
+/* các dải nền từng khu vực */
+.section{border-top:1px solid rgba(255,255,255,.03)}
+#concept{background:radial-gradient(circle at 100% 0%,rgba(42,27,18,.3) 0%,var(--abyss) 60%)}
+#treasure{background:radial-gradient(circle at 50% 50%,rgba(199,154,71,.15) 0%,rgba(4,26,37,.8) 50%,var(--abyss) 100%)}
+#treasure::before{display:none}
+#itinerary{background:linear-gradient(180deg,var(--abyss),var(--water-depth))}
+#packages{background:var(--abyss)}
+#safety{background:var(--abyss)}
+#pay{background:linear-gradient(180deg,var(--abyss),rgba(42,27,18,.28) 55%,var(--abyss))}
+
+/* thẻ chung */
+.xp{background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.xp:hover,.xp.open{border-color:var(--gold-rich)}
+.xp.open{background:rgba(4,26,37,.85)}
+.xp-h small{color:var(--gold-rich)}
+
+/* rương */
+.treasure-grid .xp:not(.premium){background:rgba(4,26,37,.45);border-color:rgba(132,196,208,.2)}
+.treasure-grid .xp:not(.premium):hover,.treasure-grid .xp:not(.premium).open{border-color:rgba(132,196,208,.5)}
+.treasure-grid .xp:not(.premium) .badge{background:var(--coral);color:#fff;box-shadow:0 5px 15px rgba(79,209,197,.3)}
+.xp.premium{background:linear-gradient(145deg,rgba(10,62,76,.85),rgba(4,26,37,.95));border:1px solid var(--gold-rich);color:#e6dfd3;box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 40px rgba(199,154,71,.2)}
+.xp.premium:hover,.xp.premium.open{border-color:var(--gold-glint);box-shadow:0 30px 70px rgba(0,0,0,.9),0 0 60px rgba(246,211,101,.35)}
+.xp.premium h4{color:var(--gold-glint);text-shadow:0 0 20px rgba(246,211,101,.3)}
+.xp.premium .badge{background:linear-gradient(90deg,var(--gold-rich),var(--gold-glint));color:var(--abyss);box-shadow:0 5px 20px rgba(246,211,101,.4)}
+.xp.premium .pl{border-color:var(--gold-glint);color:var(--gold-glint)}
+.xp.premium:hover .pl,.xp.premium.open .pl{background:var(--gold-glint);border-color:var(--gold-glint);color:var(--abyss)}
+.xp.premium .hint{color:var(--gold-glint)}
+
+/* hành trình */
+.timeline::before{background:linear-gradient(180deg,transparent,var(--gold-rich),var(--coral),var(--gold-rich),transparent);opacity:.6;box-shadow:0 0 15px var(--gold-rich)}
+.timeline .xp{background:var(--glass)}
+.timeline .xp::before{background:var(--abyss);border:2px solid var(--gold-glint)}
+.timeline .xp.open::before{background:var(--gold-glint);border-color:var(--gold-glint);animation:ping 2.5s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(246,211,101,.6)}70%,100%{box-shadow:0 0 0 15px rgba(246,211,101,0)}}
+.time{display:inline-block;color:var(--gold-rich);letter-spacing:.12em;background:rgba(199,154,71,.1);border:1px solid rgba(199,154,71,.3);padding:5px 12px;border-radius:4px;margin-bottom:8px}
+
+/* gói giá */
+.pk:not(.featured){--ink:#fdfbf7;--body:#8cabae;background:var(--glass);border:1px solid var(--line)}
+.pk:not(.featured):hover{border-color:var(--gold-rich)}
+.pk:not(.featured) .lbl{color:var(--gold-rich)}
+.pk:not(.featured) .price{color:var(--gold-glint)}.pk:not(.featured) .price small{color:var(--muted)}
+.pk:not(.featured) .btn-ghost{color:var(--gold-glint);border-color:rgba(232,195,123,.4)}
+.pk:not(.featured) .btn-ghost:hover{background:rgba(232,195,123,.08);color:var(--gold-glint)}
+.pk.featured{background:linear-gradient(145deg,rgba(10,62,76,.8),rgba(4,26,37,.95));border:1px solid rgba(79,209,197,.4);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.pk.featured:hover{border-color:var(--coral);box-shadow:0 35px 80px rgba(0,0,0,.7),inset 0 0 30px rgba(79,209,197,.1)}
+.pk.featured .lbl{color:var(--gold-rich)}.pk.featured .price{color:var(--gold-glint)}
+.pk-badge{background:var(--coral);color:#fff}
+.price{color:var(--gold-glint)}.price small{color:var(--muted)}
+
+/* bao gồm / chưa bao gồm */
+.tab{color:var(--muted)}
+.tab[aria-selected=true]{background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss)}
+.panel{background:rgba(4,26,37,.4);border:1px solid var(--line)}
+.panel li{color:#c3d1d2;border-bottom-color:var(--line)}
+.panel i{color:var(--coral);text-shadow:0 0 10px var(--coral)}
+.panel.no i{color:rgba(255,255,255,.2);text-shadow:none}
+
+/* an toàn */
+.trust .xp{background:linear-gradient(145deg,rgba(4,26,37,.4),transparent);border:1px solid var(--line);box-shadow:none}
+.trust .xp:hover,.trust .xp.open{border-color:var(--gold-rich);background:rgba(199,154,71,.03)}
+.trust .ico{color:var(--coral);filter:drop-shadow(0 0 10px rgba(79,209,197,.4))}
+.trust .xp-h h3{color:var(--gold-glint)}
+
+/* CTA + footer */
+.cta-box{background:linear-gradient(135deg,var(--wreck-wood),var(--water-depth));border:1px solid rgba(199,154,71,.15);color:#d0d5d2;box-shadow:none;position:relative;overflow:hidden}
+.cta-box::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,rgba(246,211,101,.1),transparent 70%);pointer-events:none}
+.cta-box>*{position:relative}
+.cta-box h2{color:var(--ivory);text-shadow:none}
+.cta-box .btn,.cta-box .btn:hover{background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);border:1px solid var(--gold-glint)}
+.footer{background:#0d0906;border-top:1px solid rgba(199,154,71,.2);backdrop-filter:none}
+.footer h4{color:var(--gold-rich)}
+.footer p,.footer a{color:rgba(253,251,247,.6)}
+.social a{border-color:rgba(199,154,71,.3);color:rgba(253,251,247,.6);background:transparent}
+.social a:hover{background:transparent;border-color:var(--gold-glint);color:var(--gold-glint);box-shadow:0 5px 15px rgba(199,154,71,.2)}
+.copy{border-top-color:rgba(199,154,71,.15);color:rgba(253,251,247,.3)}
+
+/* modal + form */
+.modal{background:rgba(1,10,15,.9)}
+.mbox{background:linear-gradient(145deg,rgba(4,26,37,.95),rgba(4,26,37,.95));border:1px solid var(--gold-rich);box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 50px rgba(199,154,71,.15)}
+.x{background:none;border:0;color:var(--gold-rich)}.x:hover{background:none;color:var(--gold-glint)}
+.form input,.form select,.qp-amt input,.qp-card textarea{background:rgba(1,10,15,.6);border:1px solid var(--line);color:#fff}
+.form input:focus,.form select:focus,.qp-amt input:focus,.qp-card textarea:focus{border-color:var(--gold-glint);box-shadow:0 0 10px rgba(199,154,71,.2)}
+.form option{background:#041a25}
+.chk input{accent-color:var(--gold-rich)}
+.policy h4{color:var(--gold-glint)}.policy li::before{color:var(--gold-rich)}.policy p,.policy li{color:#d0d5d2}
+.pay-info,.qp-info{border-color:rgba(199,154,71,.5)}.pay-info strong,.qp-info strong{color:var(--gold-glint)}
+
+/* thanh toán QR */
+.qp-card label{color:var(--gold-rich)}
+.qp-amt span{color:var(--gold-rich)}
+.qp-chip{color:var(--gold-glint);border-color:var(--line)}
+.qp-chip:hover,.qp-chip.on{background:var(--gold-rich);border-color:var(--gold-rich);color:var(--abyss)}
+.qr-card{background:linear-gradient(145deg,rgba(10,62,76,.55),rgba(4,26,37,.9));box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(199,154,71,.18)}
+.qr-card::before{background:linear-gradient(135deg,var(--gold-glint),var(--gold-rich) 50%,var(--coral))}
+.qr-top{color:var(--gold-rich)}.qr-top span:last-child{color:var(--sea)}
+.qr-bank span{color:var(--gold-glint)}
+
+@media(max-width:900px){.nav.open .links{background:rgba(2,14,20,.96);border:1px solid rgba(199,154,71,.45)}}
+
+/* ===== 5 TRANG (SPA) + HIỆU ỨNG CHUYỂN TRANG ===== */
+.page{display:none}
+.page.act{display:block}
+.page.enter{animation:pageIn 1.2s var(--e-mask) backwards}
+@keyframes pageIn{from{opacity:0;transform:translateY(46px) scale(.985);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+.page>.section:first-child{padding-top:170px}
+.links a.act{color:var(--gold-glint)}
+.links a.act::after{width:100%}
+
+/* chuyển cảnh đại dương: sóng nước dâng lên rồi rút đi */
+.veil{will-change:transform;position:fixed;inset:0;z-index:400;pointer-events:none;display:grid;place-items:center;
+ background:linear-gradient(180deg,#0a4a5e 0%,#06303d 35%,#031c29 70%,#010a0f 100%);transform:translateY(calc(100% + 130px))}
+.veil .vtop,.veil .vtrail{position:absolute;left:0;right:0;width:100%;display:block}
+.veil .vtop{bottom:100%;height:120px;margin-bottom:-1px}
+.veil .vtrail{top:100%;height:60px;margin-top:-1px;background-size:100% 100%;background-repeat:no-repeat;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath fill='%23010a0f' d='M0 0V30C150 60 300 0 450 30S750 60 900 30 1150 10 1200 30V0Z'/%3E%3C/svg%3E")}
+
+/* bọt khí thở của thợ lặn: nổi lên từng đợt khi chuyển trang */
+.breath{position:fixed;left:0;right:0;bottom:0;height:0;z-index:410;pointer-events:none}
+.breath b{position:absolute;bottom:-40px;border-radius:50%;border:1.5px solid rgba(220,250,255,.65);
+ background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8) 0,rgba(255,255,255,.2) 22%,rgba(180,235,245,.06) 60%);
+ box-shadow:inset -2px -3px 6px rgba(255,255,255,.12),0 0 10px rgba(180,235,245,.2);will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){.breath{display:none}}
+
+/* ===== COMBO NHÓM ===== */
+#combo{background:radial-gradient(60% 45% at 50% 0%,rgba(199,154,71,.10),transparent 70%),linear-gradient(180deg,var(--abyss),#06141c 55%,var(--abyss))}
+.cb-switch{display:flex;justify-content:center;margin-bottom:36px}
+.cb-sw{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:rgba(1,10,15,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.cb-t{border:0;background:none;color:var(--muted);padding:12px 24px;border-radius:999px;font-weight:500;font-size:14.5px;cursor:pointer;transition:.35s var(--ease)}
+.cb-t:hover{color:var(--gold-glint)}
+.cb-t.on{background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);box-shadow:0 8px 22px rgba(199,154,71,.3)}
+.cb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+.cb{--mx:50%;--my:0%;position:relative;display:flex;flex-direction:column;padding:34px 28px 30px;border-radius:26px;overflow:hidden;isolation:isolate;
+ background:linear-gradient(160deg,rgba(10,62,76,.55),rgba(4,26,37,.92) 55%);box-shadow:0 24px 60px rgba(0,0,0,.6);transition:transform .5s var(--ease),box-shadow .5s}
+.cb::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;z-index:2;pointer-events:none;
+ background:linear-gradient(145deg,rgba(246,211,101,.75),rgba(199,154,71,.14) 42%,rgba(132,196,208,.4));
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.cb::after{content:"";position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .4s;pointer-events:none;
+ background:radial-gradient(380px circle at var(--mx) var(--my),rgba(246,211,101,.16),transparent 65%)}
+.cb:hover{transform:translateY(-8px);box-shadow:0 34px 80px rgba(0,0,0,.75),0 0 50px rgba(199,154,71,.16)}
+.cb:hover::after{opacity:1}
+.cb>*{position:relative;z-index:1}
+.cb.hot{background:linear-gradient(160deg,rgba(14,84,98,.78),rgba(4,26,37,.95) 60%);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 60px rgba(199,154,71,.22)}
+.cb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.cb-ppl{font:500 12.5px "Be Vietnam Pro";letter-spacing:.2em;text-transform:uppercase;color:var(--gold-rich)}
+.cb.hot .cb-ppl::after{content:" · Premium";color:var(--coral)}
+.cb-off{font:600 22px "Playfair Display",serif;color:var(--abyss);background:linear-gradient(135deg,var(--gold-glint),var(--gold-rich));border-radius:999px;padding:6px 16px;box-shadow:0 8px 22px rgba(246,211,101,.3)}
+.cb h3{font-size:34px;margin-bottom:6px;color:var(--ivory)}
+.cb-alt{font-size:13px;color:var(--muted);min-height:44px;line-height:1.6}
+.cb-price{margin:16px 0 4px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.cb-old{color:var(--muted);font-size:15px;text-decoration:line-through;text-decoration-color:var(--coral)}
+.cb-new{font:600 36px "Playfair Display",serif;color:var(--gold-glint)}
+.cb-price small{font-size:13px;color:var(--muted)}
+.cb-per{font-size:14px;color:var(--sea);margin-bottom:20px}
+.cb ul{list-style:none;display:grid;gap:10px;margin:0 0 26px;padding:20px 0 0;border-top:1px solid var(--line);flex:1}
+.cb li{position:relative;padding-left:22px;font-size:14.5px;color:#c9d6d7;line-height:1.65}
+.cb li::before{content:"✦";position:absolute;left:0;top:1px;color:var(--gold-rich);font-size:12px}
+.cb .btn{width:100%}
+@media(max-width:900px){.cb-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.cb-t{padding:11px 16px;font-size:13.5px}.cb-new{font-size:32px}}
+
+/* trang chủ: số liệu + 4 cánh cửa */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);overflow:hidden;margin-bottom:28px}
+.stats div{padding:26px 20px;border-left:1px solid var(--line);text-align:center}
+.stats div:first-child{border:0}
+.stats b{display:block;font:600 40px "Playfair Display",serif;color:var(--gold-glint);line-height:1.2}
+.stats span{font-size:14px;color:var(--muted)}
+.portals{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.portal{position:relative;display:block;height:320px;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);isolation:isolate;transition:border-color .4s,transform .5s var(--ease)}
+.portal img{position:absolute;inset:0;filter:saturate(.9) brightness(.8);transition:transform 1.2s var(--ease),filter .6s}
+.portal::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(1,10,15,.05) 20%,rgba(1,10,15,.93))}
+.portal div{position:absolute;left:26px;right:80px;bottom:24px;z-index:2}
+.portal span{font:500 12px "Be Vietnam Pro";letter-spacing:.22em;color:var(--gold-rich)}
+.portal h3{font-size:28px;color:var(--ivory);margin:4px 0 6px}
+.portal p{font-size:14px;color:#b7c8ca;line-height:1.6}
+.portal em{position:absolute;right:22px;bottom:24px;z-index:2;width:46px;height:46px;border-radius:50%;border:1px solid rgba(199,154,71,.6);color:var(--gold-glint);display:grid;place-items:center;font-style:normal;font-size:18px;transition:.4s var(--ease)}
+.portal:hover{border-color:var(--gold-rich);transform:translateY(-6px)}
+.portal:hover img{transform:scale(1.08);filter:saturate(1) brightness(.95)}
+.portal:hover em{background:var(--gold-rich);color:var(--abyss);transform:translate(3px,-3px)}
+@media(max-width:900px){
+ .portals{grid-template-columns:1fr}.portal{height:280px}
+ .stats{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--line)}
+ .page>.section:first-child{padding-top:130px}
+}
+@media(prefers-reduced-motion:reduce){.veil{display:none}.page.enter{animation:none}}
+
+/* ===== HIỆU ỨNG TỪ STRATUM: decode chữ, vào trang, mask-rise, parallax, vẽ đường kẻ ===== */
+:root{--e-mask:cubic-bezier(.16,1,.3,1);--e-line:cubic-bezier(.65,0,.35,1);--e-soft:cubic-bezier(.22,.61,.36,1)}
+@keyframes drawX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes maskUp{from{transform:translateY(112%)}to{transform:translateY(0)}}
+@keyframes settle{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes settleC{from{opacity:0;transform:translate(-50%,7px)}to{opacity:1;transform:translateX(-50%)}}
+@keyframes revealUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+
+/* nhãn decode */
+.t{display:inline-block;text-align:left;white-space:pre}
+
+/* headline: mỗi dòng trồi lên từ mặt nạ */
+.hero h1 .hrow{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.hero h1 .hrise{display:block}
+
+/* entrance (chạy 1 lần khi tải trang) */
+.anim .logo{animation:settle .56s var(--e-soft) .1s both}
+.anim .links{animation:fadeIn .4s linear .34s both}
+.anim .nav-in>.btn{animation:settle .56s var(--e-soft) .3s both}
+.anim .menu{animation:settle .56s var(--e-soft) .36s both}
+.anim .hero .tag{animation:fadeIn .5s linear .3s both}
+.anim .hero h1 .hrise{animation:maskUp .9s var(--e-mask) .42s both}
+.anim .hero h1 .hrow+.hrow .hrise{animation-delay:.52s}
+.anim .hero-sub{animation:settle .72s var(--e-soft) .7s both}
+.anim .hero .actions{animation:settle .62s var(--e-soft) .86s both}
+.anim .hero-media{animation:revealUp 1.1s var(--e-mask) .5s both}
+.anim .hero-chip{animation:fadeIn .6s linear 1.3s both}
+.anim .cue{animation:settleC .52s var(--e-soft) 1.1s both}
+
+/* đường kẻ được "vẽ" khi tiêu đề mục hiện ra */
+.head::before{content:"";display:block;width:64px;height:1px;margin-bottom:18px;background:linear-gradient(90deg,var(--gold-rich),var(--gold-glint));transform:scaleX(0);transform-origin:left center}
+.head.center::before{margin-left:auto;margin-right:auto;transform-origin:center}
+.head.show::before,.rv.show .head::before{animation:drawX .8s var(--e-line) .25s both}
+
+/* parallax */
+.bg{will-change:transform;transform-origin:50% 50%;backface-visibility:hidden}
+.hero-media{will-change:transform}
+
+/* ===== LIVE CHAT AI (kiêm FAQ) ===== */
+.chat-fab{position:fixed;right:22px;bottom:22px;z-index:260;width:62px;height:62px;border-radius:50%;border:1px solid var(--gold-glint);cursor:pointer;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 30px rgba(199,154,71,.35);transition:transform .4s var(--ease),box-shadow .4s}
+.chat-fab:hover{transform:translateY(-4px) scale(1.05)}
+.chat-fab svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chat-fab .ic-x{display:none}
+.chat.open .chat-fab .ic-chat{display:none}.chat.open .chat-fab .ic-x{display:block}
+.chat-fab::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(246,211,101,.5);animation:fabPulse 2.8s ease-out infinite;pointer-events:none}
+.chat.open .chat-fab::after{display:none}
+@keyframes fabPulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.35);opacity:0}}
+.chat-panel{position:fixed;right:22px;bottom:100px;z-index:260;width:min(430px,calc(100vw - 24px));height:min(700px,calc(100svh - 124px));display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:linear-gradient(160deg,rgba(8,45,58,.97),rgba(14,9,6,.98));border:1px solid var(--gold-rich);box-shadow:0 30px 80px rgba(0,0,0,.75),0 0 40px rgba(199,154,71,.15);opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);transform-origin:100% 100%;transition:opacity .35s var(--ease),transform .45s var(--ease),visibility 0s .45s}
+.chat.open .chat-panel{opacity:1;visibility:visible;transform:none;transition:opacity .35s var(--ease),transform .45s var(--ease)}
+.chat-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);background:rgba(1,10,15,.5)}
+.chat-av{width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid var(--gold-rich);flex-shrink:0}
+.chat-head strong{display:block;font:600 15px "Be Vietnam Pro";color:var(--ivory);line-height:1.3}
+.chat-head small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.chat-head small::before{content:"";width:7px;height:7px;border-radius:50%;background:#5fe3a1;box-shadow:0 0 8px #5fe3a1}
+.chat-close{margin-left:auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--gold-rich);font-size:20px;line-height:1;cursor:pointer}
+.chat-close:hover{color:var(--gold-glint);border-color:var(--gold-rich)}
+.chat-log{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.chat-log::-webkit-scrollbar{width:4px}
+.msg{max-width:86%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.7;white-space:pre-line;animation:fade .4s var(--ease)}
+.msg.bot{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid var(--line);color:#d7e2e3;border-bottom-left-radius:4px}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);font-weight:500;border-bottom-right-radius:4px}
+.msg.typing{display:flex;gap:5px;padding:14px 16px}
+.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--gold-rich);animation:tdot 1.1s infinite}
+.msg.typing i:nth-child(2){animation-delay:.18s}.msg.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.chat-chips{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start;max-width:100%}
+.chat-chip{border:1px solid rgba(199,154,71,.5);background:rgba(199,154,71,.07);color:var(--gold-glint);border-radius:999px;padding:8px 14px;font-size:13px;line-height:1.4;text-align:left;cursor:pointer;transition:.3s var(--ease)}
+.chat-chip:hover{background:var(--gold-rich);color:var(--abyss);border-color:var(--gold-rich)}
+.chat-dock{border-top:1px solid var(--line);background:rgba(1,10,15,.42);padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px;flex:0 0 auto}
+.dock-label{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-glint);opacity:.85}
+.dock-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.dock-tabs::-webkit-scrollbar{display:none}
+.dock-tab{flex:0 0 auto;border:1px solid var(--line);background:transparent;color:#a9c1c4;border-radius:999px;padding:7px 14px;font-size:12.5px;cursor:pointer;transition:.3s var(--ease);white-space:nowrap}
+.dock-tab:hover{color:#fff;border-color:var(--gold-rich)}
+.dock-tab.on{background:var(--gold-rich);color:var(--abyss);border-color:var(--gold-rich);font-weight:600}
+.dock-list{display:flex;flex-direction:column;gap:8px;max-height:176px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:rgba(199,154,71,.5) transparent}
+.dock-q{border:1px solid rgba(199,154,71,.4);background:rgba(199,154,71,.06);color:var(--gold-glint);border-radius:14px;padding:11px 14px;font-size:13.5px;line-height:1.5;text-align:left;cursor:pointer;transition:.3s var(--ease)}
+.dock-q:hover{background:var(--gold-rich);color:var(--abyss);border-color:var(--gold-rich)}
+.dock-q:disabled{opacity:.55;cursor:wait}
+.chat-form{display:flex;gap:10px;padding:12px 14px 14px;border-top:1px solid var(--line);background:rgba(1,10,15,.5)}
+.chat-form input{flex:1;min-width:0;height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:rgba(1,10,15,.7);color:#fff;font:inherit;font-size:15px}
+.chat-form input::placeholder{color:#7da3a9}
+.chat-form input:focus{outline:none;border-color:var(--gold-glint)}
+.chat-form button{width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold-rich),#d4af37);color:var(--abyss);display:grid;place-items:center;flex-shrink:0}
+.chat-form button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chat-note{padding:0 16px 10px;font-size:11.5px;color:#6f8d91;text-align:center;background:rgba(1,10,15,.5)}
+@media(max-width:560px){
+  .chat-dock{padding:10px 12px 8px;gap:8px}.dock-list{max-height:136px}.dock-q{padding:9px 12px;font-size:13px}
+  .chat-fab{right:14px;bottom:14px;width:56px;height:56px}
+  .chat-panel{right:12px;left:12px;width:auto;bottom:84px;height:min(640px,calc(100svh - 100px))}
+  .chat-form input{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){.chat-fab::after{display:none}}
+
+/* ===== ĐỊA ĐIỂM THỰC HIỆN ===== */
+.loc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.loc{border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:var(--glass);transition:border-color .4s,transform .5s var(--ease)}
+.loc:hover{border-color:var(--gold-rich,var(--gold));transform:translateY(-6px)}
+.loc-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:linear-gradient(135deg,#082d3a,#14697A)}
+.loc-img img{position:absolute;inset:0;transition:transform 1.2s var(--ease)}
+.loc:hover .loc-img img{transform:scale(1.07)}
+.loc-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(1,10,15,.55))}
+.loc-no{position:absolute;left:18px;bottom:14px;z-index:2;font:500 12px "Be Vietnam Pro";letter-spacing:.22em;color:#fff}
+.loc-b{padding:22px 24px 26px}
+.loc-b small{display:block;font:500 13px "Be Vietnam Pro";color:var(--gold-rich,var(--gold));margin-bottom:6px}
+.loc-b h3{font-size:26px;margin-bottom:8px}
+.loc-b p{font-size:14.5px;line-height:1.7}
+.loc-note{max-width:760px;margin:44px auto 0;text-align:center;font-size:15.5px;padding:22px 28px;border:1px dashed var(--gold-rich,var(--gold));border-radius:18px}
+.loc-note b{font:inherit;font-weight:600;color:var(--gold-glint,var(--gold))}
+@media(max-width:900px){.loc-grid{grid-template-columns:1fr}}
+
+.wx{max-width:900px;margin:44px auto 0;text-align:center}
+.wx h4{font-size:22px;margin-bottom:6px}
+.wx p{font-size:14.5px;margin-bottom:18px}
+.wx-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.wx-links .btn{min-height:46px;padding:0 22px;font-size:14.5px}
+
+.wx-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.wx-tab{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--glass);cursor:pointer;font-size:14px;font-weight:500;transition:.3s var(--ease)}
+.wx-tab:hover{border-color:var(--gold-rich,var(--gold))}
+.wx-tab.on{background:var(--sea,#14697A);color:#fff;border-color:transparent}
+.wx-days{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;min-height:150px}
+.wx-d{padding:18px 14px;border-radius:18px;border:1px solid var(--line);background:var(--glass);box-shadow:var(--shadow)}
+.wx-d b{display:block;font:600 14px "Be Vietnam Pro";margin-bottom:4px}
+.wx-d .ic{font-size:34px;line-height:1.3}
+.wx-d .t{font:600 22px "Playfair Display",serif;margin:2px 0 6px}
+.wx-d small{display:block;font-size:13px;line-height:1.6}
+.wx-msg{grid-column:1/-1;align-self:center;font-size:14.5px}
+.wx-foot{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:18px;font-size:13px}
+@media(max-width:560px){.wx-days{grid-template-columns:1fr}}
+.wx-d.past{opacity:.55}
+.cta-box h2 .ln{display:block;text-wrap:balance}
+
+/* ===== PHỐI MÀU MỚI: Abyss navy + Aqua + Vàng (bỏ hồng/san hô) ===== */
+.pk-badge,.treasure-grid .xp:not(.premium) .badge{background:linear-gradient(135deg,#f6d365,#c79a47)!important;color:#06222e!important;box-shadow:0 5px 15px rgba(246,211,101,.25)!important}
+.xp:hover .pl,.xp.open .pl{color:#04222c!important}
+.pk.featured{border:1px solid rgba(246,211,101,.45)!important;background:linear-gradient(145deg,rgba(14,84,98,.75),rgba(4,26,37,.96))!important}
+.pk.featured:hover{border-color:var(--gold-glint)!important;box-shadow:0 35px 80px rgba(0,0,0,.7),inset 0 0 30px rgba(79,209,197,.1)!important}
+.cb.hot .cb-ppl::after{color:var(--gold-glint)!important}
+.cb-old{text-decoration-color:var(--gold-rich)!important}
+.panel i,.trust .ico{color:var(--coral)!important}
+.cta-box{border:1px solid rgba(246,211,101,.35)!important}
+.cta-box .btn{color:#3d2c0a!important}
+
+/* ===== MƯỢT HƠN: chỉ animate transform/opacity, bỏ blur filter & backdrop-filter nặng ===== */
+.page{contain:layout style}
+.page.pre{display:block;position:absolute;left:0;top:0;width:100%;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
+.page.enter{animation:pageIn .85s var(--e-mask) backwards;will-change:opacity,transform}
+@keyframes pageIn{from{opacity:0;transform:translate3d(0,26px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+.veil{will-change:transform;backface-visibility:hidden;contain:layout paint style;transform:translate3d(0,calc(100% + 130px),0)}
+.breath{contain:layout style}
+.breath b{will-change:auto;box-shadow:none;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.7) 0,rgba(255,255,255,.15) 24%,rgba(180,235,245,.05) 62%)}
+.progress{width:100%!important;transform:scaleX(0);transform-origin:0 50%;will-change:transform}
+html.vt .bg::before,html.vt .bubbles *{animation-play-state:paused!important}
+/* backdrop-filter trên nhiều thẻ lớn là nguyên nhân chính gây khựng: thay bằng nền đặc hơn */
+.xp,.stats,.btn-ghost,.story-label,.hero-chip,.cb-sw{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.xp{background:rgba(5,28,39,.86)}
+.stats{background:rgba(5,28,39,.78)}
+.btn-ghost{background:rgba(1,10,15,.55)}
+.rv{will-change:auto}
+
+/* ===== HIỆU ỨNG 3D: nghiêng theo chuột + lật vào khi cuộn + ánh sáng quét ===== */
+.xp,.loc{position:relative}
+.xp:not(.qp-card)::after,.loc::after,.qr-card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;opacity:0;transition:opacity .35s;
+ background:radial-gradient(340px circle at var(--gx,50%) var(--gy,0%),rgba(255,233,176,.15),transparent 62%)}
+.xp:not(.qp-card):hover::after,.loc:hover::after,.qr-card:hover::after{opacity:1}
+.xp:not(.qp-card),.cb,.portal,.loc,.wx-d,.gallery>div,.qr-card{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+@keyframes flipIn{from{opacity:0;transform:perspective(900px) rotateX(-58deg) translate3d(0,34px,0)}to{opacity:1;transform:perspective(900px) rotateX(0) translate3d(0,0,0)}}
+.rv.show .xp:not(.qp-card),.rv.show .cb,.rv.show .portal,.rv.show .loc,.rv.show .gallery>div,.gallery.rv.show>div,.rv.show .wx-d{
+ animation:flipIn 1.05s var(--e-mask) backwards;animation-delay:calc(var(--i,0)*95ms);transform-origin:50% 0}
+.rv.show .xp.open{animation:none}
+@media(prefers-reduced-motion:reduce){.rv.show .xp,.rv.show .cb,.rv.show .portal,.rv.show .loc,.gallery.rv.show>div{animation:none!important}}
+
+/* ===== CON TRỎ ĐÈN LẶN: chùm sáng dưới nước ===== */
+.lamp{position:fixed;left:0;top:0;width:0;height:0;z-index:700;pointer-events:none;opacity:0;transition:opacity .4s}
+.lamp.on{opacity:1}
+.lamp-beam,.lamp-core{position:absolute;left:0;top:0;border-radius:50%;will-change:transform}
+.lamp-beam{width:380px;height:380px;margin:-190px 0 0 -190px;
+ background:radial-gradient(circle at center,rgba(170,235,245,.075) 0%,rgba(120,210,225,.04) 30%,rgba(90,190,210,.015) 52%,transparent 70%);
+ animation:lampFlick 4.2s ease-in-out infinite alternate}
+.lamp-beam::after{content:"";position:absolute;inset:34%;border-radius:50%;
+ background:radial-gradient(circle,rgba(255,244,205,.06),rgba(255,236,170,.02) 55%,transparent 72%);animation:lampPulse 2.6s ease-in-out infinite alternate}
+@keyframes lampFlick{from{opacity:.82}to{opacity:1}}
+@keyframes lampPulse{from{transform:scale(.92);opacity:.8}to{transform:scale(1.08);opacity:1}}
+.lamp-core{width:10px;height:10px;margin:-5px 0 0 -5px;background:radial-gradient(circle,rgba(255,244,205,.95) 0 30%,rgba(255,226,140,.55) 55%,rgba(255,226,140,0) 75%);
+ box-shadow:0 0 8px 2px rgba(255,230,160,.35),0 0 18px 5px rgba(150,235,245,.12);transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),box-shadow .3s}
+.lamp.hot .lamp-core{width:22px;height:22px;margin:-11px 0 0 -11px;box-shadow:0 0 10px 3px rgba(255,230,160,.35),0 0 24px 8px rgba(150,235,245,.12)}
+.lamp.down .lamp-core{width:7px;height:7px;margin:-3.5px 0 0 -3.5px}
+html.has-lamp,html.has-lamp *{cursor:none!important}
+@media(prefers-reduced-motion:reduce){.lamp-beam,.lamp-beam::after{animation:none}}
+
+/* ===== FOOTER gọn: cột tự co theo nội dung, link không rớt dòng ===== */
+@media(min-width:901px){
+ .f-grid{grid-template-columns:minmax(260px,1.3fr) repeat(3,max-content);justify-content:space-between;column-gap:64px;row-gap:40px}
+ .footer .f-grid a,.footer .f-grid>div:not(:first-child) p{white-space:nowrap}
+ .footer .f-grid>div:first-child p{white-space:normal;max-width:300px}
+}
+.footer h4{white-space:nowrap}
+.footer .f-grid>div:not(:first-child) a,.footer .f-grid>div:not(:first-child) p{line-height:1.9}
+
+/* footer: bỏ logo, cả 4 cột bắt đầu cùng một hàng tiêu đề */
+.footer .f-grid>div:first-child p{line-height:1.9}
+.footer .f-grid{align-items:start}
+
+/* footer: giữ logo, canh logo và 3 tiêu đề cột cùng một đường giữa */
+.footer .f-logo{width:56px;height:56px;border-width:2px;margin-bottom:14px}
+@media(min-width:901px){
+ .footer .f-grid>div:not(:first-child) h4{height:56px;display:flex;align-items:center;margin-bottom:14px}
+}
+
+/* ===== EBOOK ===== */
+.portal-wide{grid-column:1/-1;height:260px}
+.ebook-box{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(199,154,71,.45);box-shadow:var(--shadow);background:#050f1f}
+.ebook-frame{display:block;width:100%;height:clamp(640px,86svh,880px);border:0;background:#050f1f}
+.ebook-actions{margin-top:26px}
+@media(max-width:900px){.ebook-frame{height:clamp(560px,82svh,820px)}.portal-wide{height:280px}}
+.ebook-box:fullscreen,.ebook-box:-webkit-full-screen{border-radius:0;border:0}
+.ebook-box:fullscreen .ebook-frame{height:100%}
+
+/* ===== MƯỢT HƠN + ĐẶT CHỖ GỌN (bản sửa cuối, đặt sau cùng để ghi đè) ===== */
+html{scrollbar-gutter:stable}
+/* nền: bỏ mix-blend-mode & lớp trôi chậm (tốn GPU nhất), giữ tia sáng */
+.bg::after{mix-blend-mode:normal;animation:none}
+.band{background-attachment:scroll}
+.bubble:nth-child(n+7){display:none}
+/* hiện dần nhẹ hơn: bỏ lật 3D, rút ngắn thời gian */
+.rv{transition:opacity .6s var(--ease),transform .6s var(--ease)}
+@keyframes flipIn{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+.rv.show .xp:not(.qp-card),.rv.show .cb,.rv.show .portal,.rv.show .loc,.rv.show .gallery>div,.gallery.rv.show>div,.rv.show .wx-d{
+  animation-duration:.55s;animation-delay:calc(var(--i,0)*55ms)}
+.page.enter{animation-duration:.5s}
+/* đèn lặn: bỏ 2 hiệu ứng nhấp nháy vô hạn trên chùm sáng lớn */
+.lamp-beam,.lamp-beam::after{animation:none}
+/* mở form thì tạm dừng nền động, bỏ blur toàn màn hình */
+.modal{backdrop-filter:none;-webkit-backdrop-filter:none}
+html:has(.modal.open) .bg::before,html:has(.modal.open) .bubble,html:has(.modal.open) .qr-scan{animation-play-state:paused}
+
+/* form đặt chỗ: gọn, vừa một màn hình, không phải cuộn */
+.modal{padding:12px}
+.mbox{max-height:calc(100dvh - 24px);padding:26px 28px 22px}
+.mbox .tag{margin-bottom:4px}
+.mbox h3{font-size:26px;margin:2px 0 4px}
+.mbox>p{font-size:14px;line-height:1.6;margin-bottom:14px}
+.form{gap:10px}.row{gap:10px}
+.form input,.form select{height:46px;font-size:14.5px}
+.chk{font-size:12.5px;line-height:1.5;gap:10px}
+.chk input{margin-top:3px}
+.form .btn{min-height:48px;margin-top:2px}
+
+/* bỏ thanh kéo ngang/dọc trong form đặt chỗ */
+.mbox{overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.mbox::-webkit-scrollbar{display:none}
+::-webkit-scrollbar{height:6px}
+
+/* bước chuyển khoản: QR bên trái, thông tin + nút bên phải */
+#paymentPanel{grid-template-columns:auto 1fr;gap:8px 22px;align-items:center;text-align:left!important}
+#payIntro{grid-column:1/-1;font-size:13.5px;line-height:1.55}
+#payCard{grid-row:2/6;margin:0!important}
+#payCard .qr-card{max-width:230px;padding:12px;border-radius:22px}
+#payCard .qr-top{margin-bottom:8px}
+#payCard .qr-frame{padding:10px}
+#payCard .qr-scan{left:10px;right:10px;top:10px}
+#payCard .qr-bank{margin-top:8px}
+#payCard .qr-bank strong{font-size:15px}
+#paymentPanel>p:not(#payIntro){margin:0!important;font-size:12.5px!important;line-height:1.5}
+#paymentPanel .btn{min-height:44px;margin:0!important}
+
+@media(max-width:560px){
+  .mbox{padding:18px 18px 16px}
+  .mbox h3{font-size:22px}
+  #modalIntro{display:none}
+  .x{width:34px;height:34px;right:12px;top:12px}
+  .form{gap:8px}.row{gap:8px}
+  .form input,.form select{height:44px}
+  #paymentPanel{grid-template-columns:1fr 1fr;gap:8px}
+  #payIntro,#payCard,#paymentPanel .pay-info,#paymentPanel>p:not(#payIntro){grid-column:1/-1}
+  #payCard{grid-row:auto}
+  #paymentPanel>p:not(#payIntro){display:none}
+  #payCard .qr-card{max-width:190px}
+  #payCard .qr-top{display:none}
+}
+@media(max-height:660px){#payCard .qr-card{max-width:150px}#payCard .qr-bank small{display:none}}
+
+/* ===== THANH ĐỘ SÂU bên phải: cuộn xuống càng sâu, số mét càng tăng ===== */
+.depth{position:fixed;right:12px;top:50%;height:min(58vh,440px);width:84px;transform:translateY(-50%);z-index:90;pointer-events:none;font:500 11px "Be Vietnam Pro",sans-serif;color:#E9C98A;font-variant-numeric:tabular-nums}
+.depth-line{position:absolute;right:30px;top:0;bottom:0;width:2px;border-radius:2px;background:linear-gradient(#7FE0E8,#14697A 55%,#06303d);box-shadow:0 0 10px rgba(94,208,214,.25)}
+.depth-ticks{position:absolute;right:24px;top:0;bottom:0;width:6px;border-bottom:1px solid rgba(233,201,138,.5);background:repeating-linear-gradient(to bottom,rgba(233,201,138,.5) 0 1px,transparent 1px calc(100%/30))}
+.depth-lb{position:absolute;right:0;transform:translateY(-50%);width:22px;font-size:10px;opacity:.75;white-space:nowrap}
+.depth-lb:last-of-type{width:auto}
+.depth-mark{position:absolute;left:0;right:0;top:0;height:0;transition:transform .22s cubic-bezier(.22,1,.36,1);will-change:transform}
+.depth-dot{position:absolute;right:25px;top:-6px;width:12px;height:12px;border-radius:50%;background:#F6D365;box-shadow:0 0 0 3px rgba(246,211,101,.22),0 0 14px rgba(246,211,101,.6)}
+.depth-pill{position:absolute;right:46px;top:-12px;padding:3px 10px;border-radius:999px;border:1px solid rgba(199,154,71,.55);background:rgba(1,10,15,.82);color:#F3DFA8;font-size:12px;line-height:18px;white-space:nowrap}
+.depth-pill b{font-weight:600}
+html:has(.modal.open) .depth{opacity:0}
+@media(max-width:900px){.depth{right:6px;width:66px;height:min(50vh,360px)}.depth-lb,.depth-ticks{display:none}.depth-line{right:12px}.depth-dot{right:7px}.depth-pill{right:28px}}
+
+/* thanh độ sâu dạng cột nước, không còn giống cây thước */
+.depth-ticks,.depth-lb{display:none}
+.depth{width:70px}
+.depth-line{right:22px;width:4px;background:linear-gradient(#7FE0E8,#1b7f93 40%,#0a3a4a 75%,#04212c);opacity:.28;box-shadow:none}
+.depth-fill{position:absolute;right:22px;top:0;bottom:0;width:4px;border-radius:4px;background:linear-gradient(#7FE0E8,#F6D365);transform-origin:top;transform:scaleY(0);transition:transform .22s cubic-bezier(.22,1,.36,1);box-shadow:0 0 10px rgba(246,211,101,.35)}
+.depth-dot{right:19px;top:-5px;width:10px;height:10px}
+.depth-pill{right:38px}
+@media(max-width:900px){.depth{width:58px}.depth-line,.depth-fill{right:10px}.depth-dot{right:7px}.depth-pill{right:24px}}
+
+/* thanh độ sâu: màu đại dương + chuyển động lặn (trôi chậm, có quán tính, nhả bọt khí) */
+.depth-line{background:linear-gradient(#8EEBF0 0%,#27B0C4 22%,#12789A 48%,#0B4A73 74%,#051F3A 100%);opacity:.32}
+.depth-fill{background:linear-gradient(#8EEBF0 0%,#27B0C4 22%,#12789A 48%,#0B4A73 74%,#051F3A 100%);transform:none;transition:none;box-shadow:0 0 12px rgba(94,208,214,.35)}
+.depth-mark{transition:none}
+.depth-dot{background:radial-gradient(circle at 35% 30%,#fff,#BDF3F7 55%,#6FD8E4);box-shadow:0 0 0 3px rgba(127,224,232,.22),0 0 14px rgba(127,224,232,.65);animation:diverBreath 4.2s ease-in-out infinite}
+@keyframes diverBreath{0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(127,224,232,.18),0 0 12px rgba(127,224,232,.5)}50%{transform:scale(1.22);box-shadow:0 0 0 6px rgba(127,224,232,.10),0 0 20px rgba(127,224,232,.8)}}
+.depth-pill{border-color:rgba(127,224,232,.45);background:rgba(2,18,30,.82);color:#D6F6F8}
+.depth-bub{position:absolute;right:20px;border-radius:50%;border:1px solid rgba(200,245,252,.75);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.05));pointer-events:none;will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){.depth-dot{animation:none}.depth-bub{display:none}}
+
+/* icon mục an toàn: nét vẽ thay cho emoji */
+.trust .ico{display:block;line-height:0}
+.trust .ico svg{width:38px;height:38px;display:block;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+</head>
+<body data-page="home">
+<div class="progress" id="bar"></div>
+<aside class="depth" id="depth" aria-hidden="true">
+  <i class="depth-line"></i><i class="depth-fill" id="depthFill"></i>
+  <div class="depth-mark" id="depthMark"><i class="depth-dot"></i><span class="depth-pill"><b id="depthVal">0</b> m</span></div>
+</aside><div class="bg"></div><div class="waves"><i></i><i></i><i></i></div><div class="bubbles" id="bubbles"></div>
+
+<div class="veil" id="veil" aria-hidden="true">
+  <svg class="vtop" viewBox="0 0 1200 120" preserveAspectRatio="none">
+    <path fill="#3aa6b8" fill-opacity=".35" d="M0 120V60C150 20 300 100 450 60S750 20 900 60 1150 90 1200 60V120Z"/>
+    <path fill="#1b7f93" fill-opacity=".6" d="M0 120V76C120 46 260 104 420 74S720 44 880 78 1120 98 1200 70V120Z"/>
+    <path fill="#0a4a5e" d="M0 120V92C150 70 300 112 460 92S760 70 920 94 1130 106 1200 90V120Z"/>
+  </svg>
+  <i class="vtrail"></i>
+</div>
+<div class="breath" id="breath" aria-hidden="true"></div>
+<nav class="nav" id="nav"><div class="wrap nav-in">
+  <a href="#top" class="logo"><img src="1790835778506_5425315552270575529_g1738385182363836924_437a9b8c90075b8f71ce7c07024b3f20.jpg" alt="SeaCrates Logo"></a>
+  <div class="links"><a data-p="home" href="#top">Trang chủ</a><a data-p="concept" href="#concept">Kỷ nguyên thám hiểm</a><a data-p="itinerary" href="#itinerary">Nhật ký hành trình</a><a data-p="safety" href="#safety">Bảo chứng an toàn</a><a data-p="ebook" href="#ebook">Ebook</a><a data-p="pricing" href="#packages">Giá</a></div>
+  <a href="#packages" class="btn btn-primary" style="min-height:44px;padding:0 24px">Khởi hành</a>
+  <button class="menu" id="menu" aria-label="Mở menu">☰</button>
+</div></nav>
+
+<div class="page act" data-page="home">
+<header class="hero" id="top"><div class="wrap">
+  <div>
+    <span class="tag">The Luxury Deep-Sea Expedition</span>
+    <h1><span class="hrow"><span class="hrise">Find your deepest</span></span><em class="hrow"><span class="hrise">Seacrates.</span></em></h1>
+    <p class="hero-sub">Một hành trình lặn biển vượt ra ngoài giới hạn thông thường. Khám phá những rạn san hô nguyên sơ, giải mã các tọa độ bị lãng quên và đánh thức kho báu SeaCrates dưới đáy đại dương.</p>
+    <div class="actions">
+      <button class="btn btn-primary" data-package="Gói Lặn Trải Nghiệm">Đặt lịch thám hiểm</button>
+      <a class="btn btn-ghost" href="#concept">Giải mã bí ẩn</a>
+    </div>
+  </div>
+  <div class="hero-media">
+    <img src="pexels-francesco-ungaro-11444170.jpg" alt="Rạn san hô dưới đáy biển">
+    <div class="hero-chip">45 phút · 4 rương báu · 1 kho báu</div>
+  </div>
+</div></header>
+
+<section class="section" id="explore"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">Khám phá SeaCrates</span><h2>Năm cánh cửa dẫn xuống biển sâu</h2>
+  <p>Mỗi trang là một chương của cuộc viễn chinh. Chọn một cánh cửa và lặn tiếp.</p></div>
+  <div class="stats rv">
+    <div><b>45</b><span>phút dưới đáy biển</span></div>
+    <div><b>04</b><span>rương báu</span></div>
+    <div><b>4h</b><span>trọn vẹn hành trình</span></div>
+    <div><b>18+</b><span>tuổi tham gia</span></div>
+  </div>
+  <div class="portals rv">
+    <a class="portal" href="#concept"><img src="pexels-harvey-clements-13141095-15763624.jpg" alt="Kỷ nguyên thám hiểm" loading="lazy" style="object-position:40% 60%"><div><span>01</span><h3>Kỷ nguyên thám hiểm</h3><p>Bộ mật mã đại dương và hệ thống rương báu đang chờ bạn giải mã.</p></div><em>↗</em></a>
+    <a class="portal" href="#itinerary"><img src="photo-1595323397978-65433d24fc23.avif" alt="Nhật ký hành trình" loading="lazy" style="object-position:50% 52%"><div><span>02</span><h3>Nhật ký hành trình</h3><p>6 chặng trong 4 tiếng, từ đón khách đến teabreak trên boong.</p></div><em>↗</em></a>
+    <a class="portal" href="#safety"><img src="pexels-mjlo-35175952.jpg" alt="Bảo chứng an toàn" loading="lazy"><div><span>03</span><h3>Bảo chứng an toàn</h3><p>Divemaster PADI/SSI, thiết bị bảo dưỡng định kỳ, tầm soát y tế.</p></div><em>↗</em></a>
+    <a class="portal" href="#packages"><img src="pexels-maahidphotos-16604582.jpg" alt="Giá và đặt lịch" loading="lazy"><div><span>04</span><h3>Giá &amp; đặt lịch</h3><p>Giá từ 1.500.000đ, combo nhóm giảm đến 9%, thanh toán nhanh bằng mã QR.</p></div><em>↗</em></a>
+    <a class="portal portal-wide" href="#ebook"><img src="pexels-pixabay-73759.jpg" alt="Ebook SeaCrates" loading="lazy" style="object-position:50% 45%"><div><span>05</span><h3>Ebook SeaCrates</h3><p>Lật từng trang cuốn cẩm nang: câu chuyện, hành trình và mọi điều cần biết trước khi xuống nước.</p></div><em>↗</em></a>
+  </div>
+</div></section>
+</div>
+
+<div class="page" data-page="concept">
+<section class="section" id="concept"><div class="wrap grid2">
+  <div class="story-img rv"><img src="pexels-dimitris-k-1835608349-30572249.jpg" alt="Thợ lặn cầm bản đồ đại dương">
+    <div class="story-label"><span>The Concept</span><strong>Bộ Mật Mã Đại Dương</strong></div></div>
+  <div class="rv">
+    <span class="tag">Mystery & Exploration</span>
+    <div class="head" style="margin-bottom:0"><h2>Không chỉ lặn biển. Đó là một tuyệt tác truy tìm.</h2>
+    <p>Mỗi chuyến lặn cùng SeaCrates là một chương trong cuốn nhật ký viễn chinh. Bạn hóa thân thành nhà thám hiểm thực thụ, lần theo dấu vết thời gian để thu thập đồng tiền vàng dưới lòng biển sâu.</p></div>
+    <div class="stack">
+      <div class="xp open"><button class="xp-h" aria-expanded="true"><h4>Biệt đội thám hiểm</h4><span class="pl">+</span></button><div class="xp-b"><div><p>Hành trình đề cao tính cá nhân hóa. Chia thành các nhóm nhỏ tinh hoa (3-4 người), đồng hành cùng 1 Divemaster chuyên nghiệp để đảm bảo an toàn và trải nghiệm mượt mà tuyệt đối.</p></div></div></div>
+      <div class="xp"><button class="xp-h" aria-expanded="false"><h4>Mật mã của nước</h4><span class="pl">+</span></button><div class="xp-b"><div><p>Sở hữu chiếc la bàn và bảng manh mối chống nước, bạn có 45 phút dưới đáy đại dương để lần mở các "Trạm kiểm soát" bí mật — nơi cất giấu những tọa độ huyền thoại.</p></div></div></div>
+      <div class="xp"><button class="xp-h" aria-expanded="false"><h4>Vinh quang & tưởng thưởng</h4><span class="pl">+</span></button><div class="xp-b"><div><p>Đội tiên phong mở được chiếc rương SeaCrates khổng lồ và mang về số "tiền vàng" kỷ lục sẽ được lưu danh, tận hưởng những đặc quyền chiến thắng đẳng cấp nhất.</p></div></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section" id="treasure" style="padding-top:20px"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">The Ultimate Rewards</span><h2>Hệ thống rương báu</h2>
+  <p>Bốn rương báu được cất giấu khéo léo giữa các rạn san hô. Từng đồng tiền vàng thu thập được là chìa khóa mở ra đặc quyền dành cho người chiến thắng.</p></div>
+  <div class="treasure-grid rv">
+    <div class="xp"><span class="badge">03 rương</span><button class="xp-h" aria-expanded="false"><div><h4>Rương Manh Mối</h4><small>The Checkpoints</small></div><span class="pl">+</span></button><div class="xp-b"><div><p>Rải rác quanh các rạn san hô, mỗi chiếc rương nhỏ nắm giữ một mảnh ghép bản đồ, gợi ý chuyển hướng và lượng "tiền vàng" khởi điểm làm hành trang cho đội thám hiểm.</p></div></div><div class="hint">Nhấn để mở rương</div></div>
+    <div class="xp premium"><span class="badge">01 rương duy nhất</span><button class="xp-h" aria-expanded="false"><div><h4>Rương Báu Vật</h4><small style="color:#D6E6E7">The SeaCrates</small></div><span class="pl">+</span></button><div class="xp-b"><div><p>Mục tiêu tối thượng của hành trình. Nơi chứa đựng phần thưởng vô giá: Voucher đặc quyền Premium, vật phẩm lưu niệm độc bản và sự chứng nhận cho những nhà viễn chinh tài ba nhất.</p></div></div><div class="hint">Nhấn để xem phần thưởng</div></div>
+  </div>
+</div></section>
+
+<div class="band" aria-hidden="true"></div>
+
+<section class="section" id="locations" style="padding-top:20px"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">Destinations</span><h2>Ba vùng biển, mỗi mùa một hành trình</h2>
+  <p>Ba địa điểm được chọn để triển khai SeaCrates, mỗi nơi tỏa sáng vào một thời điểm riêng trong năm.</p></div>
+  <div class="loc-grid rv">
+    <article class="loc"><div class="loc-img"><img src="hon-mun-nha-trang.jpg" alt="Biển Hòn Mun, Nha Trang" loading="lazy" onerror="this.style.display='none'"><span class="loc-no">01</span></div>
+      <div class="loc-b"><small>Nha Trang · Khánh Hòa</small><h3>Hòn Mun</h3><p>Khu bảo tồn biển đầu tiên của Việt Nam, nổi tiếng với rạn san hô và nước trong vắt giữa vịnh Nha Trang.</p></div></article>
+    <article class="loc"><div class="loc-img"><img src="quan-dao-an-thoi-phu-quoc.jpg" alt="Quần đảo An Thới, Phú Quốc" loading="lazy" onerror="this.style.display='none'"><span class="loc-no">02</span></div>
+      <div class="loc-b"><small>Phú Quốc · Kiên Giang</small><h3>Quần đảo An Thới</h3><p>Cụm đảo nhỏ phía nam Phú Quốc với làn nước xanh ngọc, bãi cát trắng và những rạn san hô gần bờ.</p></div></article>
+    <article class="loc"><div class="loc-img"><img src="phu-quy-binh-thuan.jpg" alt="Đảo Phú Quý, Bình Thuận" loading="lazy" onerror="this.style.display='none'"><span class="loc-no">03</span></div>
+      <div class="loc-b"><small>Bình Thuận</small><h3>Đảo Phú Quý</h3><p>Hòn đảo hoang sơ ngoài khơi Bình Thuận, biển xanh, đá núi lửa và hệ sinh thái biển còn nguyên vẹn.</p></div></article>
+  </div>
+  <div class="wx rv" id="wx"><h4>Dự báo thời tiết theo giai đoạn 3 ngày</h4><p>Hiển thị từng cụm 3 ngày (12–14, 15–17, 18–20…), hết cụm này tự chuyển sang cụm tiếp theo. Chọn điểm lặn để xem.</p>
+    <div class="wx-tabs" role="tablist">
+      <button type="button" class="wx-tab on" data-k="0">Nha Trang · Hòn Mun</button>
+      <button type="button" class="wx-tab" data-k="1">Phú Quốc · An Thới</button>
+      <button type="button" class="wx-tab" data-k="2">Phú Quý · Bình Thuận</button>
+    </div>
+    <div class="wx-days" id="wxDays" aria-live="polite"><div class="wx-msg">Đang tải dự báo…</div></div>
+    <div class="wx-foot"><span>Nguồn dữ liệu: Open-Meteo (mô hình dự báo quốc tế)</span>
+      <a class="btn btn-ghost" href="https://nchmf.gov.vn" target="_blank" rel="noopener">Xem dự báo chính thức · KTTV quốc gia ↗</a></div>
+  </div>
+  <p class="loc-note rv"><b>Mỗi vùng biển chỉ đẹp nhất trong một mùa.</b><br>Vì vậy SeaCrates chỉ vận hành tại một điểm duy nhất trong từng thời kỳ, thay vì mở cùng lúc ba chi nhánh, để luôn lặn đúng mùa biển đẹp nhất và giữ trọn chất lượng cho từng chuyến đi.</p>
+</div></section>
+</div>
+
+<div class="page" data-page="itinerary">
+
+<section class="section" id="itinerary"><div class="wrap">
+  <div class="head rv"><span class="tag">The Timeline</span><h2>Nhật ký hành trình</h2><p>Trải nghiệm liên hoàn kéo dài 4 tiếng, được thiết kế chính xác và chu đáo trong từng khoảnh khắc. Nhấn vào từng chặng để xem chi tiết.</p></div>
+  <div class="timeline rv">
+    <div class="xp open"><button class="xp-h" aria-expanded="true"><div><span class="time">07:30 – 08:00</span><h4>Nghi thức đón khách</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Gặp gỡ tại bến cảng riêng. Đội ngũ chuyên môn đánh giá sức khỏe và hỗ trợ hoàn tất thủ tục miễn trừ y tế trong không gian thư giãn.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><div><span class="time">08:00 – 08:45</span><h4>Nhổ neo & kích hoạt nhiệm vụ</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Lướt sóng ra khơi. Huấn luyện viên trưởng phác họa cốt truyện đại dương, truyền đạt luật chơi và thiết lập tiêu chuẩn an toàn tối cao.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><div><span class="time">08:45 – 09:00</span><h4>Hòa nhịp cùng áp suất</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Trang bị wetsuit chuyên nghiệp và bình khí chuẩn quốc tế. Tiến hành bài test thiết bị và những nhịp thở làm quen mặt nước đầu tiên.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><div><span class="time">09:00 – 09:45</span><h4>Action! Rẽ sóng tìm vàng</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Tuyệt tác bắt đầu. 45 phút chìm đắm trong thế giới tĩnh lặng, bám theo từng manh mối để chinh phục chiếc rương SeaCrates cuối cùng.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><div><span class="time">09:45 – 10:30</span><h4>Phút giây khải hoàn</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Trở lại khoang thuyền trong sự tự hào. Các đội khui rương, kiểm đếm số tiền vàng thu thập và đón nhận những phần thưởng xứng tầm.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><div><span class="time">10:30 – 11:30</span><h4>Teabreak đẳng cấp trên boong</h4></div><span class="pl">+</span></button><div class="xp-b"><div><p>Tận hưởng tiệc nhẹ với trái cây nhiệt đới và nước ép tươi mát. Tàu cập bến, khép lại một chuyến viễn chinh không thể nào quên.</p></div></div></div>
+  </div>
+</div></section>
+</div>
+
+<div class="page" data-page="safety">
+<section class="section" id="safety"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">Trust & Security</span><h2>Bảo chứng an toàn</h2><p>SeaCrates đặt sự an toàn của bạn lên trên cả chuyến phiêu lưu, với những chuẩn mực khắt khe nhất.</p></div>
+  <div class="trust rv">
+    <div class="xp"><button class="xp-h" aria-expanded="false"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.2-2.8 7.6-7 9.5-4.2-1.9-7-5.3-7-9.5V6l7-3z"/><path d="M8.8 12.2l2.2 2.2 4.2-4.4"/></svg></span><h3 style="font-size:22px">Bảo chứng PADI / SSI</h3><span class="pl" style="position:absolute;right:20px;top:20px">+</span></button><div class="xp-b"><div><p>100% đội ngũ Divemaster mang chứng nhận huấn luyện và phản ứng nhanh quốc tế, dày dặn bản lĩnh xử lý tình huống đại dương.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h14a2 2 0 012 2v3a4 4 0 01-4 4h-2.5a2 2 0 01-1.7-1l-.3-.5a.6.6 0 00-1 0l-.3.5a2 2 0 01-1.7 1H7a4 4 0 01-4-4V9z"/><path d="M3 10.5H1.5M21 10.5h1.5M12 7v4"/></svg></span><h3 style="font-size:22px">Thiết bị tối tân</h3><span class="pl" style="position:absolute;right:20px;top:20px">+</span></button><div class="xp-b"><div><p>Bình khí, van điều áp và wetsuit được bảo dưỡng định kỳ, vô trùng sau mỗi chuyến đi và chịu được áp lực cực đại.</p></div></div></div>
+    <div class="xp"><button class="xp-h" aria-expanded="false"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/><path d="M6 12h3l1.5-2.5 2.5 5 1.5-2.5H18"/></svg></span><h3 style="font-size:22px">Tầm soát thể chất</h3><span class="pl" style="position:absolute;right:20px;top:20px">+</span></button><div class="xp-b"><div><p>Chỉ đón thám hiểm gia từ 18 tuổi trở lên. Tầm soát y tế điện tử đánh giá sức khỏe tức thời ngay tại bến.</p></div></div></div>
+  </div>
+  <div class="gallery rv">
+    <div><img src="pexels-pspov-3113238.jpg" alt="Thuyền SeaCrates đưa thợ lặn ra điểm lặn" loading="lazy" style="object-position:50% 45%"></div>
+    <div><img src="pexels-daniel-shipilov-68266946-32293259.jpg" alt="Các thợ lặn di chuyển dưới biển sâu" loading="lazy"></div>
+  </div>
+</div></section>
+</div>
+
+<div class="page" data-page="ebook">
+<section class="section" id="ebook"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">SeaCrates Ebook</span><h2>Cuốn cẩm nang của nhà thám hiểm</h2>
+  <p>Lật từng trang để khám phá câu chuyện SeaCrates. Trên máy tính, chạm mép sách hoặc dùng phím ← → để lật; trên điện thoại, vuốt ngang.</p></div>
+  <div class="ebook-box rv">
+    <iframe id="ebookFrame" class="ebook-frame" src="ebook.html" title="Ebook SeaCrates" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+  </div>
+  <div class="actions ebook-actions rv" style="justify-content:center">
+    <button type="button" class="btn btn-ghost" id="ebookFs">Xem toàn màn hình</button>
+    <a class="btn btn-ghost" href="ebook.html" target="_blank" rel="noopener">Mở ebook ở tab mới</a>
+    <button type="button" class="btn btn-primary" data-package="Gói Lặn Trải Nghiệm">Đặt lịch thám hiểm</button>
+  </div>
+</div></section>
+</div>
+
+<div class="page" data-page="pricing">
+<section class="section" id="packages"><div class="wrap">
+  <div class="head rv"><span class="tag">Booking & Pricing</span><h2>Đặc quyền thượng lưu</h2><p>Chọn đi cùng Divemaster hoặc tự do khám phá. Đi nhóm từ 2 người để nhận giảm giá và quà tặng riêng.</p><div style="margin-top:20px"><button type="button" class="btn btn-ghost" onclick="openPolicy()" style="min-height:44px;padding:0 22px">Xem chính sách hoàn hủy</button></div></div>
+  <div class="pk-grid rv">
+    <article class="xp pk"><div class="lbl">Có Divemaster · cho nhà thám hiểm mới</div><h3>The Discovery</h3><div class="price">2.000.000<small>VNĐ / khách</small></div>
+      <p>Có Divemaster đồng hành sát sao suốt hành trình. Thiết kế riêng cho người chưa từng lặn bình khí hoặc chưa biết bơi.</p><button class="btn btn-ghost" data-package="The Discovery">Kiểm tra lịch trống</button></article>
+    <article class="xp pk featured"><span class="pk-badge">PADI / SSI</span><div class="lbl">Không Divemaster · cho tay lặn chuyên nghiệp</div><h3>The Explorer</h3><div class="price">1.500.000<small>VNĐ / khách</small></div>
+      <p>Bản lĩnh làm chủ đại dương. Trở thành Leader dẫn dắt toàn đội giải đố. Yêu cầu chứng nhận kỹ năng lặn (Open Water trở lên). Gói không có Divemaster đi cùng.</p><button class="btn btn-primary" data-package="The Explorer">Kiểm tra lịch trống</button></article>
+  </div>
+  <div class="rv">
+    <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true" data-p="inc">Đã bao gồm</button><button class="tab" role="tab" aria-selected="false" data-p="exc">Chưa bao gồm</button></div>
+    <ul class="panel on" id="inc">
+      <li><i>✓</i>Cano/tàu cao tốc riêng tư đưa đón ra tọa độ lặn.</li>
+      <li><i>✓</i>Trang bị lặn cao cấp (bình khí, kính lặn, chân vịt, wetsuit).</li>
+      <li><i>✓</i>Divemaster quốc tế (PADI/SSI) đồng hành sát sao (áp dụng gói có Divemaster).</li>
+      <li><i>✓</i>Bộ đạo cụ: bản đồ dập nổi, la bàn thợ lặn và rương báu.</li>
+      <li><i>✓</i>Bảo hiểm du lịch với hạn mức bồi thường tối đa.</li>
+      <li><i>✓</i>Nhiếp ảnh & quay phim dưới nước (giao toàn bộ file).</li>
+      <li><i>✓</i>Teabreak thư giãn (nước tinh khiết, trái cây, bánh ngọt âu).</li>
+      <li><i>✓</i>Lễ trao thưởng và vật phẩm tri ân cho đội chiến thắng.</li>
+    </ul>
+    <ul class="panel no" id="exc">
+      <li><i>✕</i>Xe limousine/ô tô đưa đón từ khách sạn đến cảng (hỗ trợ đặt hộ).</li>
+      <li><i>✕</i>Thuế giá trị gia tăng (VAT) theo quy định.</li>
+      <li><i>✕</i>Chi tiêu phát sinh cho ẩm thực và mua sắm cá nhân.</li>
+      <li><i>✕</i>Tip cho đội ngũ HLV và thủy thủ (hoàn toàn tự nguyện).</li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="section" id="combo"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">Group Combos</span><h2>Đi càng đông, càng hời</h2>
+  <p>Giảm 5% cho nhóm 2 người, 7% cho nhóm 4 người và 9% cho nhóm 6 người, kèm quà tặng riêng cho từng combo.</p></div>
+  <div class="cb-switch rv"><div class="cb-sw" role="tablist" aria-label="Chọn loại vé">
+    <button type="button" class="cb-t on" data-price="1500000" data-lbl="Không Divemaster">Không Divemaster · 1.500.000đ</button>
+    <button type="button" class="cb-t" data-price="2000000" data-lbl="Có Divemaster">Có Divemaster · 2.000.000đ</button>
+  </div></div>
+  <div class="cb-grid rv">
+    <article class="cb" data-n="2">
+      <div class="cb-top"><span class="cb-ppl">02 người</span><span class="cb-off">-5%</span></div>
+      <h3>SEAMATES</h3><div class="cb-alt">Combo dành cho cặp đôi và bạn đồng hành.</div>
+      <div class="cb-price"><s class="cb-old"></s><b class="cb-new"></b><small>VNĐ / nhóm</small></div>
+      <p class="cb-per">≈ <span class="cb-pp"></span> VNĐ / khách</p>
+      <ul>
+        <li>Dây đeo lanyard độc quyền của SeaCrates, tặng 2 dây để đeo cùng người mình thương</li>
+        <li>In 2 ảnh polaroid ghi lại khoảnh khắc đẹp nhất của bạn</li>
+      </ul>
+      <button class="btn btn-ghost cb-book" type="button">Đặt combo này</button>
+    </article>
+    <article class="cb" data-n="4">
+      <div class="cb-top"><span class="cb-ppl">04 người</span><span class="cb-off">-7%</span></div>
+      <h3>SeaSquad</h3><div class="cb-alt">Tên gọi khác: AQuad · Deep Sea-kers · sean4rgies</div>
+      <div class="cb-price"><s class="cb-old"></s><b class="cb-new"></b><small>VNĐ / nhóm</small></div>
+      <p class="cb-per">≈ <span class="cb-pp"></span> VNĐ / khách</p>
+      <ul>
+        <li>Miễn phí xe đưa đón từ khách sạn đến khu du lịch</li>
+        <li>Voucher 4 lon nước giải khát bất kỳ</li>
+        <li>Voucher giảm 20% tiền thuê dụng cụ hỗ trợ đặc biệt</li>
+        <li>Trọn bộ quà của combo 2 người, dành cho cả 4 người</li>
+      </ul>
+      <button class="btn btn-ghost cb-book" type="button">Đặt combo này</button>
+    </article>
+    <article class="cb hot" data-n="6">
+      <div class="cb-top"><span class="cb-ppl">06 người</span><span class="cb-off">-9%</span></div>
+      <h3>Ocean’s Six</h3><div class="cb-alt">Tên gọi khác: Sea-xth Sense</div>
+      <div class="cb-price"><s class="cb-old"></s><b class="cb-new"></b><small>VNĐ / nhóm</small></div>
+      <p class="cb-per">≈ <span class="cb-pp"></span> VNĐ / khách</p>
+      <ul>
+        <li>Private Divemaster: cả 6 người đi riêng, không ghép nhóm hay khách lẻ</li>
+        <li>Thuê, mượn dụng cụ hỗ trợ cao cấp miễn phí</li>
+        <li>Túi tote in hình độc quyền của SeaCrates, vải cao cấp, chống thấm nước</li>
+        <li>Trọn bộ quà của các combo trước, dành cho cả 6 người</li>
+      </ul>
+      <button class="btn btn-primary cb-book" type="button">Đặt combo này</button>
+    </article>
+  </div>
+</div></section>
+
+<section class="section" id="pay"><div class="wrap">
+  <div class="head center rv" style="text-align:center"><span class="tag">Payment</span><h2>Thanh toán nhanh bằng mã QR</h2>
+  <p>Nhập số tiền và nội dung, SeaCrates sẽ tạo mã VietQR kèm mã đơn hàng riêng. Mở app ngân hàng, quét mã là xong.</p></div>
+  <div class="qp-grid rv">
+    <form class="xp qp-card" id="qpForm" onsubmit="qpGen(event)">
+      <label for="qpAmount">Số tiền (VNĐ)</label>
+      <div class="qp-amt"><input id="qpAmount" inputmode="numeric" autocomplete="off" placeholder="Ví dụ: 2.000.000" required><span>đ</span></div>
+      <div class="qp-chips">
+        <button type="button" class="qp-chip" data-v="1500000">1.500k</button>
+        <button type="button" class="qp-chip" data-v="2000000">2.000k</button>
+        <button type="button" class="qp-chip" data-v="2850000">2.850k</button>
+        <button type="button" class="qp-chip" data-v="3800000">3.800k</button>
+        <button type="button" class="qp-chip" data-v="5580000">5.580k</button>
+        <button type="button" class="qp-chip" data-v="7440000">7.440k</button>
+        <button type="button" class="qp-chip" data-v="8190000">8.190k</button>
+        <button type="button" class="qp-chip" data-v="10920000">10.920k</button>
+      </div>
+      <label for="qpContent">Nội dung</label>
+      <textarea id="qpContent" placeholder="Họ tên, gói đã chọn, ngày giờ đến... (VD: Linh – The Explorer – 08:00 thứ Bảy)"></textarea>
+      <button class="btn btn-primary" type="submit">Tạo mã QR</button>
+      <p class="qp-note">Ghi chú chuyển khoản sẽ bắt đầu bằng <b>mã đơn hàng</b>, vui lòng giữ nguyên khi chuyển.</p>
+    </form>
+    <div class="xp qp-card qp-out" id="qpOut" aria-live="polite">
+      <div class="qp-empty"><svg viewBox="0 0 64 64" stroke-linejoin="round"><rect x="6" y="6" width="22" height="22" rx="4"/><rect x="36" y="6" width="22" height="22" rx="4"/><rect x="6" y="36" width="22" height="22" rx="4"/><rect x="36" y="36" width="8" height="8" rx="1.5"/><path d="M52 36v8M36 52h8M52 52h6" stroke-linecap="round"/></svg><p>Mã QR của bạn sẽ hiện ở đây</p></div>
+    </div>
+  </div>
+</div></section>
+
+</div>
+
+<script>
+window.FAQ=[
+{t:"Dịch vụ, Giá vé & Ưu đãi",items:[
+ {q:"Tiền vé đã bao gồm những gì? Có bảo hiểm luôn chưa ní?",k:"bao gom gia ve bao hiem gom nhung gi tron goi gia ve",a:"Có bảo hiểm nhé. Giá vé đã bao gồm: cano/tàu cao tốc riêng tư ra điểm lặn, trang bị lặn cao cấp (bình khí, kính, chân vịt, wetsuit), bộ đạo cụ (bản đồ dập nổi, la bàn, rương báu), bảo hiểm du lịch, chụp ảnh và quay phim dưới nước (giao toàn bộ file), teabreak, lễ trao thưởng và vật phẩm tri ân cho đội thắng. Divemaster đồng hành áp dụng cho gói có Divemaster.\n\nChưa bao gồm: xe đưa đón từ khách sạn đến cảng (SeaCrates hỗ trợ đặt hộ), VAT, chi tiêu cá nhân và tip (tự nguyện)."},
+ {q:"Gói 1tr5 ngoài thợ lặn hỗ trợ ra thì có khác gì gói 2tr nữa không?",k:"goi 1tr5 1 500 000 2tr 2 000 000 explorer discovery khac nhau so sanh",a:"Hai gói khác nhau ở đối tượng và việc có Divemaster. The Discovery (2.000.000đ/khách) có Divemaster đồng hành sát sao, dành cho người chưa từng lặn bình khí hoặc chưa biết bơi. The Explorer (1.500.000đ/khách) không có Divemaster, yêu cầu chứng nhận lặn từ Open Water trở lên, và bạn sẽ làm Leader dẫn dắt cả đội. Các hạng mục còn lại theo mục Đã bao gồm trên trang Giá."},
+ {q:"Khi tôi quay lại nhiều lần thì có ưu đãi gì không?",k:"quay lai nhieu lan khach quen thanh vien uu dai giam gia tich diem",a:"SeaCrates có chính sách ưu đãi cho khách quay lại. Mức ưu đãi cụ thể được áp dụng theo từng thời điểm, bạn vui lòng nhắn email seacratesinc@gmail.com hoặc gọi hotline +84 1800 9999 để được báo mức hiện hành. Ngoài ra, đi nhóm từ 2 người bạn đã được giảm 5%, 7% hoặc 9% với các combo SEAMATES, SeaSquad, Ocean’s Six."},
+ {q:"Nếu không sử dụng các phần như tea, xe đưa đón,... mà vẫn đăng ký gói có thợ lặn hỗ trợ vì cần thợ lặn, thì có được giảm giá không?",k:"khong dung teabreak xe dua don bo bot giam gia can tho lan chi can divemaster",a:"Xe đưa đón vốn không nằm trong giá vé nên không có khoản nào để trừ. Teabreak là một phần của hành trình trọn gói, nên giá gói được giữ nguyên. Nếu bạn có nhu cầu đặc biệt, hãy liên hệ SeaCrates qua email hoặc hotline để được tư vấn."}
+]},
+{t:"An toàn & Yêu cầu kỹ thuật lặn",items:[
+ {q:"Lần đầu tôi lặn, các bạn có thể đảm bảo an toàn cho tôi không? Tôi hơi lo",k:"lan dau lo lang so an toan nguoi moi chua tung lan chua biet boi",a:"Bạn hoàn toàn yên tâm tham gia lần đầu. Gói The Discovery được thiết kế riêng cho người chưa từng lặn bình khí hoặc chưa biết bơi, với Divemaster PADI/SSI đồng hành sát sao. Nhóm nhỏ 3–4 người, có tầm soát sức khỏe tại bến, buổi hướng dẫn an toàn trên tàu, bài thở và làm quen thiết bị ở vùng nước nông trước khi xuống điểm lặn. Nếu cảm thấy chưa sẵn sàng, bạn có thể chuyển sang lặn ống thở (snorkeling)."},
+ {q:"Lặn độ sâu bao nhiêu?",k:"do sau bao nhieu met sau",a:"Độ sâu cụ thể phụ thuộc từng điểm lặn và được Divemaster thông báo trong buổi hướng dẫn trước khi xuống nước. Bạn có thể liên hệ SeaCrates qua email hoặc hotline để hỏi con số cho lịch lặn của mình."},
+ {q:"Tôi không có bằng lặn nhưng không muốn thợ lặn đi theo có được không?",k:"khong co bang lan khong muon tho lan di theo tu lan khong divemaster",a:"Rất tiếc là không. Gói không có Divemaster (The Explorer) yêu cầu chứng nhận lặn từ Open Water trở lên. Nếu bạn chưa có chứng nhận, vui lòng chọn The Discovery để có Divemaster đồng hành, vì an toàn là ưu tiên cao nhất."},
+ {q:"Thiết bị lặn của công ty có đảm bảo an toàn không?",k:"thiet bi lan binh khi wetsuit an toan bao duong",a:"Có. Bình khí, van điều áp và wetsuit được bảo dưỡng định kỳ, vô trùng sau mỗi chuyến đi và kiểm tra thiết bị trước khi xuống nước."},
+ {q:"trong quá trình lặn nếu gặp sự cố thì sao?",k:"su co gap su co tai nan khan cap het oxy ket",a:"Nhóm lặn được giữ nhỏ để Divemaster và đội ngũ theo dõi sát, có quy định ranh giới an toàn cho vùng lặn và thiết bị liên lạc với đội trên tàu. Đội ngũ Divemaster PADI/SSI được huấn luyện phản ứng nhanh với tình huống đại dương, và chuyến đi đã bao gồm bảo hiểm du lịch."},
+ {q:"Tôi có người thân lớn tuổi nhưng vẫn minh mẫn và đảm bảo về thể trạng thì có tham gia được không?",k:"nguoi lon tuoi cao tuoi ba ong bo me tuoi tac nguoi than",a:"Có thể. SeaCrates đón khách từ 18 tuổi trở lên và đánh giá sức khỏe qua tầm soát y tế điện tử tại bến. Người thân cần khai báo trung thực tình trạng sức khỏe, nên tham khảo ý kiến bác sĩ trước chuyến đi, và nên chọn The Discovery để có Divemaster đồng hành. Nếu chuyên gia lặn đánh giá chưa đủ điều kiện an toàn, công ty có quyền từ chối lặn để bảo vệ khách."},
+ {q:"Nếu trong nhóm tôi có người đã có bằng lặn nhưng có người không có thì quy định thợ lặn đi kèm thế nào?",k:"nhom co nguoi co bang nguoi khong co bang tho lan di kem hon hop",a:"Người có chứng nhận (Open Water trở lên) có thể chọn The Explorer, người chưa có bằng cần chọn The Discovery để có Divemaster đi kèm. Các combo nhóm hiện tính theo một loại vé cho cả nhóm, nên với nhóm hỗn hợp bạn hãy liên hệ SeaCrates qua email hoặc hotline để được sắp xếp phù hợp."}
+]},
+{t:"Địa điểm & Trải nghiệm truy tìm kho báu",items:[
+ {q:"Lặn ở đâu vậy? Trong nước hay ngoài nước?",k:"lan o dau dia diem trong nuoc ngoai nuoc diem lan",a:"Điểm lặn cụ thể được SeaCrates xác nhận khi bạn đặt lịch. Bạn có thể xem lịch trống và hỏi thêm qua email seacratesinc@gmail.com hoặc hotline +84 1800 9999."},
+ {q:"Các kho báu mà tôi có thể tìm thấy có thể là gì?",k:"kho bau tim thay ruong bau manh moi tien vang phan thuong qua",a:"Mỗi hành trình có 4 rương: 3 Rương Manh Mối rải quanh các rạn san hô, chứa mảnh ghép bản đồ, gợi ý chuyển hướng và “tiền vàng” khởi điểm; và 1 Rương Báu Vật SeaCrates, nơi chứa voucher đặc quyền Premium, vật phẩm lưu niệm độc bản và chứng nhận cho nhà viễn chinh tài ba."},
+ {q:"Có thể đổi quà tặng, kho báu ra hiện kim không?",k:"doi tien mat hien kim quy doi tien qua tang kho bau",a:"Theo thể lệ hiện tại, phần thưởng là voucher đặc quyền và vật phẩm lưu niệm, “tiền vàng” là vật phẩm trong trò chơi, nên chưa quy đổi ra tiền mặt."},
+ {q:"Các kho báu ở mỗi địa điểm có giống nhau không?",k:"kho bau moi dia diem giong nhau khac nhau",a:"Cấu trúc cuộc chơi giống nhau (3 Rương Manh Mối và 1 Rương Báu Vật). Bản đồ, câu chuyện và manh mối có thể được thiết kế riêng theo từng điểm lặn để mỗi hành trình đều mới mẻ."},
+ {q:"Tôi thích phim hoạt hình nhật bản, có kho báu nào là các món đồ trong hoạt hình uhnimei không?",k:"anime hoat hinh nhat ban phim manga one piece nhan vat",a:"Hiện SeaCrates chưa có kho báu mang thương hiệu hay nhân vật phim hoạt hình cụ thể, vì lý do bản quyền. Bạn có thể gửi ý tưởng về chủ đề yêu thích qua email seacratesinc@gmail.com, SeaCrates rất sẵn lòng lắng nghe góp ý."}
+]},
+{t:"Quy định đặt vé, Ghép nhóm & Hoàn/Hủy lịch",items:[
+ {q:"Chính sách hoàn tiền (nếu có lý do chính đáng) và phải báo trước bao lâu",k:"hoan tien huy tour chinh sach bao truoc bao lau huy ve ly do chinh dang",a:"Tính theo ngày làm việc (không tính Thứ 7, Chủ Nhật, lễ, Tết):\n• Hủy trước 15 ngày: hoàn 100%\n• Hủy từ 08–14 ngày: hoàn 70%\n• Hủy từ 04–07 ngày: hoàn 50%\n• Hủy trong 03 ngày hoặc không đến: không hoàn tiền\n\nLý do y tế khẩn cấp (có giấy xác nhận của bệnh viện tuyến quận/huyện trở lên): bảo lưu toàn bộ chi phí trong 6 tháng hoặc hoàn 80% nếu không sắp xếp lại được. Gửi yêu cầu qua email seacratesinc@gmail.com theo cú pháp: YÊU CẦU HỦY TOUR - [Mã đặt chỗ] - [Họ tên]. Tiền hoàn về trong 05–07 ngày làm việc."},
+ {q:"Trong trường hợp thời tiết xấu thì có thể dời lịch được không?",k:"thoi tiet xau bao bien dong doi lich doi ngay troi mua gio",a:"Được. Khi có cảnh báo biển động, bão, dòng chảy nguy hiểm hoặc lệnh cấm biển, SeaCrates sẽ thông báo hủy tour ngay. Bạn có thể dời sang ngày lặn khác phù hợp hoặc nhận hoàn 100% chi phí, không kèm phí phạt."},
+ {q:"Nếu nhóm tôi có số thành viên đông hơn số người quy định có được tham gia luôn không?",k:"nhom dong hon so nguoi quy dinh dong nguoi nhom lon toi da them nguoi",a:"Mỗi nhóm lặn được giữ nhỏ (3–4 người/Divemaster) để đảm bảo an toàn. Với nhóm đông hơn, bạn vui lòng liên hệ SeaCrates qua email hoặc hotline để được chia đội và sắp xếp lịch phù hợp. Combo lớn nhất hiện là Ocean’s Six cho 6 người với Private Divemaster."},
+ {q:"Nếu tôi không có bạn thì có thể hỗ trợ ghép nhóm không?",k:"khong co ban di mot minh ghep nhom di le solo ghep doan",a:"Được. Bạn có thể đăng ký lẻ và SeaCrates sẽ hỗ trợ ghép nhóm. Nếu tour ghép chưa đủ số lượng tối thiểu, công ty sẽ thông báo trước ít nhất 05 ngày và hoàn 100% chi phí, hoặc chuyển sang tour cá nhân (VIP) với mức phí ưu đãi."}
+]}
+];
+</script>
+
+<section class="cta"><div class="wrap"><div class="cta-box rv">
+  <h2><span class="ln">Nơi tấm bản đồ dừng lại,</span> <span class="ln">hành trình mới bắt đầu.</span></h2>
+  <p>Chọn một đặc quyền, và để SeaCrates đưa bạn chìm vào một góc đại dương mà bạn chưa từng được chiêm ngưỡng.</p>
+  <button class="btn" data-package="The Discovery">Ghi danh thám hiểm</button>
+</div></div></section>
+
+<footer class="footer"><div class="wrap">
+  <div class="f-grid">
+    <div><a href="#top" class="f-logo" style="display:block"><img src="1790835778506_5425315552270575529_g1738385182363836924_437a9b8c90075b8f71ce7c07024b3f20.jpg" alt="SeaCrates Logo"></a>
+      <p style="max-width:280px">Hành trình lặn biển giải mã kho báu. Dẫn lối bạn chạm tay vào những bí ẩn bị lãng quên dưới mặt nước.</p>
+      <div class="social">
+        <a href="https://www.facebook.com/share/1DtgfhKumQ/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
+        <a href="https://www.instagram.com/_seacrates_?cplk=MTdpb2xzYm1jbHNkNg==" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a href="https://www.threads.com/@_seacrates_?igshid=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener" aria-label="Threads"><svg viewBox="0 0 24 24"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
+        <a href="https://www.tiktok.com/@lop1lgbt1?_r=1&_t=ZS-9AUhKiFIWc0" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+      </div>
+    </div>
+    <div><h4>Hỗ trợ hành trình</h4><a href="javascript:void(0)" onclick="openChat()">Hỏi đáp nhanh cùng trợ lý AI</a><a href="javascript:void(0)" onclick="openPolicy()">Chính sách hoàn/hủy linh hoạt</a><a href="#">Cập nhật thời tiết</a></div>
+    <div><h4>Điều hướng nhanh</h4><a href="#concept">Bộ mật mã đại dương</a><a href="#itinerary">Nhật ký hành trình</a><a href="#packages">Đặc quyền thượng lưu</a><a href="#safety">Bảo chứng an toàn</a><a href="#ebook">Ebook SeaCrates</a></div>
+    <div><h4>Liên lạc</h4><p>Email: <a href="mailto:seacratesinc@gmail.com" style="display:inline">seacratesinc@gmail.com</a></p><p>Hotline đặt chỗ: +84 1800 9999</p></div>
+  </div>
+  <div class="copy">© 2026 SeaCrates — The Luxury Deep Sea Expeditions. All rights reserved.</div>
+</div></footer>
+
+<!-- LIVE CHAT AI -->
+<div class="chat" id="chat">
+  <section class="chat-panel" id="chatPanel" role="dialog" aria-label="Live chat trợ lý AI SeaCrates" aria-hidden="true">
+    <div class="chat-head">
+      <div class="chat-av"><img src="1790835778506_5425315552270575529_g1738385182363836924_437a9b8c90075b8f71ce7c07024b3f20.jpg" alt=""></div>
+      <div><strong>Trợ lý AI SeaCrates</strong><small>Trực tuyến · phản hồi tức thì</small></div>
+      <button type="button" class="chat-close" id="chatClose" aria-label="Đóng chat">×</button>
+    </div>
+    <div class="chat-log" id="chatLog" aria-live="polite"></div>
+    <div class="chat-dock" id="chatDock"><div class="dock-label">Câu hỏi có sẵn</div><div class="dock-tabs" id="dockTabs" role="tablist"></div><div class="dock-list" id="dockList"></div></div>
+    <form class="chat-form" id="chatForm" autocomplete="off">
+      <input id="chatInput" type="text" placeholder="Nhập câu hỏi của bạn..." aria-label="Nhập câu hỏi" maxlength="200">
+      <button type="submit" aria-label="Gửi"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></button>
+    </form>
+    <div class="chat-note">Trợ lý AI trả lời tự động dựa trên thông tin SeaCrates. Cần hỗ trợ trực tiếp: seacratesinc@gmail.com</div>
+  </section>
+  <button type="button" class="chat-fab" id="chatFab" aria-label="Mở live chat AI" aria-expanded="false" aria-controls="chatPanel">
+    <svg class="ic-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>
+    <svg class="ic-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+
+<!-- BOOKING -->
+<div class="modal" id="modal"><div class="mbox">
+  <button class="x" onclick="closeModal()" aria-label="Đóng">×</button>
+  <span class="tag">Đặt chỗ trực tuyến</span>
+  <h3 id="modalTitle">Thiết lập chuyến đi</h3>
+  <p id="modalIntro">Vui lòng cung cấp thông tin liên lạc. Hồ sơ đặt chỗ sẽ được gửi trực tiếp và bảo mật đến SeaCrates.</p>
+  <form class="form" id="bookingForm" onsubmit="handleBookingSubmit(event)">
+    <div class="row"><input type="text" name="Họ Tên Khách Hàng" placeholder="Họ và tên" required><input type="tel" name="Số Điện Thoại" placeholder="Số điện thoại (Zalo/WhatsApp)" required></div>
+    <div class="row"><input type="email" name="Email Liên Hệ" placeholder="Email" required>
+      <select id="packageSelect" name="Gói Lặn Đăng Ký"><option>The Discovery (Có Divemaster) — 2.000.000 VNĐ</option><option>The Explorer (Không Divemaster) — 1.500.000 VNĐ</option></select></div>
+    <div class="row"><input type="date" name="Ngày Khởi Hành" required title="Ngày khởi hành"><select name="Khung Giờ"><option>Bình Minh Đại Dương: 07:30 - 11:30</option><option>Hoàng Hôn Khơi Xa: 13:00 - 17:00</option></select></div>
+    <div class="chk"><input type="checkbox" id="medical" name="Đồng ý miễn trừ trách nhiệm y tế" value="Đã Xác Nhận" required><label for="medical">Tôi xác nhận đủ 18 tuổi, có đủ thể lực, tinh thần và đồng thuận với các điều khoản miễn trừ trách nhiệm y tế của SeaCrates.</label></div>
+    <button class="btn btn-primary" type="submit" id="submitBtn">Xác nhận & đặt lịch</button>
+  </form>
+  <div id="paymentPanel" style="display:none;text-align:center">
+    <p id="payIntro"></p>
+    <div id="payCard" style="margin-bottom:18px"></div>
+    <div class="pay-info"><div><span>Số tiền</span><strong id="payAmount"></strong></div><div><span>Nội dung CK</span><strong id="payContent"></strong></div></div>
+    <p style="font-size:13px;margin:16px 0 12px">Vui lòng giữ nguyên nội dung chuyển khoản (mã đơn) để SeaCrates đối soát nhanh nhất.</p>
+    <p id="payStatus" style="font-size:14px;margin:0 0 12px;min-height:1.3em;font-weight:600"></p>
+    <button type="button" class="btn btn-primary" id="payDone" onclick="confirmPay(false)" style="width:100%;margin-bottom:10px">Tôi đã chuyển khoản</button>
+    <button type="button" class="btn btn-ghost" onclick="copyPay(this)" style="width:100%;margin-bottom:10px">Sao chép nội dung</button>
+    <button type="button" class="btn btn-ghost" onclick="closeModal()" style="width:100%">Đóng</button>
+  </div>
+</div></div>
+
+<!-- POLICY -->
+<div class="modal" id="policyModal"><div class="mbox wide policy">
+  <button class="x" onclick="closePolicy()" aria-label="Đóng">×</button>
+  <span class="tag">Quyền lợi khách hàng</span><h3>Chính sách hoàn hủy</h3>
+  <p>Kính chào Quý khách. Tại SeaCrates, an toàn, sức khỏe và sự chuẩn bị hoàn hảo luôn được đặt lên hàng đầu. Do tính chất đặc thù của hoạt động lặn sâu thám hiểm, chính sách dưới đây nhằm đảm bảo quyền lợi tối đa và sự an tâm cho Quý khách.</p>
+  <h4>1. Hủy tour từ phía khách hàng</h4>
+  <p>Thời gian hủy tour tính theo ngày làm việc (không tính Thứ 7, Chủ Nhật và các ngày Lễ, Tết).</p>
+  <ul>
+    <li><b>Hủy trước 15 ngày khởi hành:</b> Hoàn trả 100% chi phí tour đã thanh toán.</li>
+    <li><b>Hủy từ 08 - 14 ngày trước khởi hành:</b> Hoàn trả 70% (giữ lại 30% phí sắp xếp tàu thuyền và trang thiết bị lặn).</li>
+    <li><b>Hủy từ 04 - 07 ngày trước khởi hành:</b> Hoàn trả 50% chi phí tour.</li>
+    <li><b>Hủy trong vòng 03 ngày trước khởi hành hoặc không đến (No-show):</b> Không hoàn tiền.</li>
+  </ul>
+  <p><b>Trường hợp đặc biệt (lý do y tế khẩn cấp):</b> Nếu quý khách gặp tai nạn hoặc vấn đề sức khỏe đột xuất không thể lặn (cần giấy xác nhận của bác sĩ/bệnh viện tuyến quận/huyện trở lên):</p>
+  <ul><li><b>Hỗ trợ:</b> Bảo lưu toàn bộ chi phí để dời sang ngày khác trong vòng 6 tháng, hoặc hoàn trả 80% nếu không thể sắp xếp lại lịch trình.</li></ul>
+  <h4>2. Hủy tour do lý do khách quan</h4>
+  <p>Lặn biển phụ thuộc hoàn toàn vào điều kiện tự nhiên. Sự an toàn của quý khách luôn là ưu tiên tối thượng.</p>
+  <ul>
+    <li><b>Do thời tiết/thiên tai:</b> Nếu có cảnh báo biển động, bão, dòng chảy nguy hiểm hoặc chính quyền địa phương cấm biển, công ty sẽ thông báo hủy tour ngay. Quý khách được dời sang ngày lặn khác phù hợp, <b>hoặc</b> hoàn trả 100% chi phí không kèm phí phạt.</li>
+    <li><b>Chưa đủ số lượng khởi hành (nếu áp dụng):</b> Với tour ghép không đủ số lượng tối thiểu, công ty thông báo trước ít nhất 05 ngày và hoàn 100% chi phí, hoặc chuyển sang tour cá nhân (VIP) với mức phí ưu đãi.</li>
+  </ul>
+  <h4>3. An toàn và sức khỏe (quan trọng)</h4>
+  <p>Vì tính chất mạo hiểm của lặn sâu thám hiểm, khách hàng bắt buộc khai báo y tế trung thực trước ngày đi.</p>
+  <ul>
+    <li><b>Hủy ngay tại điểm lặn do không đảm bảo an toàn:</b> Nếu chuyên gia lặn đánh giá quý khách không đủ điều kiện sức khỏe (say xỉn, hoảng loạn tâm lý, hoặc che giấu bệnh lý tim mạch/hô hấp nghiêm trọng), công ty có quyền từ chối cung cấp dịch vụ để bảo vệ tính mạng khách hàng và <b>không hoàn tiền</b>.</li>
+    <li><b>Không vượt qua bài kiểm tra kỹ năng cơ bản:</b> Nếu quý khách không hoàn thành bài tập thở và làm quen thiết bị ở vùng nước nông và tự nguyện từ bỏ việc lặn xuống vùng "kho báu", công ty hỗ trợ chuyển sang lặn ống thở (snorkeling) và hoàn lại 30% chênh lệch chi phí.</li>
+  </ul>
+  <h4>4. Quy trình hủy và hoàn tiền</h4>
+  <ul>
+    <li><b>Bước 1 - Gửi yêu cầu:</b> Gửi email đến <b>seacratesinc@gmail.com</b> theo cú pháp: <i>YÊU CẦU HỦY TOUR - [Mã đặt chỗ] - [Họ tên]</i>.</li>
+    <li><b>Bước 2 - Xác nhận:</b> CSKH sẽ gọi điện xác nhận và gửi email chi tiết khoản tiền được hoàn (nếu có) trong vòng 24 giờ.</li>
+    <li><b>Bước 3 - Hoàn tiền:</b> Tiền hoàn được chuyển khoản vào tài khoản ngân hàng của quý khách hoặc hoàn qua cổng thanh toán quốc tế trong <b>05 đến 07 ngày làm việc</b>.</li>
+  </ul>
+  <p style="text-align:center;margin-top:28px;font-style:italic;color:var(--gold)">* Chi phí đã bao gồm bảo hiểm lặn biển mạo hiểm. SeaCrates luôn đặt sự an tâm của bạn lên hàng đầu.</p>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+// tiến độ cuộn + nav
+(function(){
+  const bar=$('#bar'),nav=$('#nav');let tick=false,scrolledState=null;
+  const dBox=$('#depth'),dMark=$('#depthMark'),dVal=$('#depthVal'),dFill=$('#depthFill'),DEPTH_MAX=18;let dH=dBox.clientHeight,dShown=-1;
+  const RMD=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let dTarget=0,dCur=0,dRun=false,dLastB=0,dLive=0;
+  function depthDraw(){
+    dMark.style.transform='translate3d(0,'+(dCur*dH).toFixed(1)+'px,0)';
+    dFill.style.clipPath='inset(0 0 '+((1-dCur)*100).toFixed(2)+'% 0)';
+    const m=Math.round(dCur*DEPTH_MAX*10)/10;if(m!==dShown){dShown=m;dVal.textContent=m.toFixed(1).replace('.',',')}
+  }
+  function bubble(y){
+    if(RMD||dLive>=8||!dBox.animate)return;
+    const b=document.createElement('i'),sz=3+Math.random()*4,rise=34+Math.random()*46,dx=(Math.random()-.5)*14;
+    b.className='depth-bub';b.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+(y-sz/2).toFixed(1)+'px;margin-right:'+(Math.random()*6-3).toFixed(1)+'px';
+    dBox.appendChild(b);dLive++;
+    b.animate([{transform:'translate3d(0,0,0)',opacity:0},{opacity:.9,offset:.2},{transform:'translate3d('+dx+'px,'+(-rise)+'px,0)',opacity:0}],{duration:1500+Math.random()*900,easing:'cubic-bezier(.3,.1,.5,1)'}).onfinish=()=>{b.remove();dLive--};
+  }
+  function depthStep(now){
+    const d=dTarget-dCur;
+    dCur+=d*(RMD?1:.07);                       // trôi theo từ từ, như thợ lặn đang cân bằng phao
+    if(Math.abs(d)>.0009&&now-dLastB>130){dLastB=now;bubble(dCur*dH)}
+    depthDraw();
+    if(Math.abs(dTarget-dCur)<.0003){dCur=dTarget;depthDraw();dRun=false;return}
+    requestAnimationFrame(depthStep);
+  }
+  function depthPaint(p){dTarget=p;if(!dRun){dRun=true;requestAnimationFrame(depthStep)}}
+  addEventListener('resize',()=>{dH=dBox.clientHeight;tick||(tick=true,requestAnimationFrame(paint))},{passive:true});
+  function paint(){
+    tick=false;
+    const h=document.documentElement,max=h.scrollHeight-h.clientHeight;
+    const p=max>0?Math.min(1,h.scrollTop/max):0;bar.style.transform='scaleX('+p.toFixed(4)+')';depthPaint(p);
+    const sc=scrollY>30;if(sc!==scrolledState){scrolledState=sc;nav.classList.toggle('scrolled',sc)}
+  }
+  addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(paint)}},{passive:true});
+  paint();
+})();
+$('#menu').onclick=()=>$('#nav').classList.toggle('open');
+$$('.links a').forEach(a=>a.onclick=()=>$('#nav').classList.remove('open'));
+
+// hiện dần khi cuộn
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target)}}),{threshold:.12});
+$$('.rv').forEach(el=>io.observe(el));
+
+// bấm để mở / thu gọn thẻ
+$$('.xp-h').forEach(b=>b.addEventListener('click',()=>{
+  const c=b.closest('.xp'),on=c.classList.toggle('open');b.setAttribute('aria-expanded',on);
+}));
+
+// tab bao gồm / chưa bao gồm
+$$('.tab').forEach(t=>t.onclick=()=>{
+  $$('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
+  $$('.panel').forEach(p=>p.classList.toggle('on',p.id===t.dataset.p));
+});
+
+// bọt khí (ít, nhẹ)
+for(let i=0;i<12;i++){
+  const b=document.createElement('span'),s=6+Math.random()*14;
+  b.className='bubble';b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${14+Math.random()*16}s;animation-delay:${-Math.random()*20}s`;
+  $('#bubbles').appendChild(b);
+}
+
+// modal đặt chỗ
+const modal=$('#modal'),pkgSel=$('#packageSelect');
+function openModal(p,sel){
+  modal.classList.add('open');$('#modalTitle').textContent=p;
+  const m={'The Discovery':'The Discovery (Có Divemaster) — 2.000.000 VNĐ','The Explorer':'The Explorer (Không Divemaster) — 1.500.000 VNĐ'};
+  if(sel)pkgSel.value=sel;else if(m[p])pkgSel.value=m[p];document.body.style.overflow='hidden';
+}
+function closeModal(){stopPoll();curOrder=null;modal.classList.remove('open');document.body.style.overflow='';
+  $('#bookingForm').style.display='';$('#modalIntro').style.display='';$('#paymentPanel').style.display='none'}
+function showPayment(info,sent){
+  $('#payIntro').textContent=(curOrder&&curOrder.server&&!curOrder.demo)
+    ?'Quét mã QR bên dưới để chuyển khoản giữ chỗ. Chuyển xong hệ thống sẽ tự xác nhận và gửi email cho bạn.'
+    :'Quét mã QR bên dưới để chuyển khoản giữ chỗ, chuyển xong bấm “Tôi đã chuyển khoản”.';
+  $('#payStatus').textContent='';$('#payDone').style.display=(curOrder&&curOrder.server&&!curOrder.demo)?'none':'';$('#payDone').disabled=false;
+  $('#bookingForm').style.display='none';$('#modalIntro').style.display='none';
+  $('#payAmount').textContent=info.amount;$('#payContent').textContent=info.content;
+  mountQr($('#payCard'),info.num,info.content,()=>{$('#payCard').innerHTML='<div class="qr-card"><div class="qr-frame"><img class="qr-img" src="qr-thanh-toan.jpg" alt="Mã QR chuyển khoản SeaCrates"></div></div>'});
+  $('#paymentPanel').style.display='grid';modal.querySelector('.mbox').scrollTop=0;startPoll();
+}
+function copyPay(btn){
+  (navigator.clipboard?navigator.clipboard.writeText($('#payContent').textContent):Promise.reject())
+    .then(()=>{btn.textContent='Đã sao chép ✔';setTimeout(()=>btn.textContent='Sao chép nội dung',2000)}).catch(()=>{});
+}
+$$('[data-package]').forEach(b=>b.onclick=()=>openModal(b.dataset.package));
+
+// ===== CẤU HÌNH EMAIL & TỰ ĐỘNG XÁC NHẬN =====
+// EmailJS (emailjs.com, miễn phí 200 mail/tháng): điền 3 giá trị dưới đây. Để trống thì chỉ gửi mail cho SeaCrates qua formsubmit.
+const EMAILJS_CFG={publicKey:'',serviceId:'',templateId:'',owner:'seacratesinc@gmail.com'};
+// Server Netlify (netlify/functions/seacrates.mjs) lo việc tạo mã đơn, dò tiền vào và gửi mail. Chạy không có server thì tự về chế độ khách bấm "Tôi đã chuyển khoản".
+const AUTO_API='/api/order';
+let curOrder=null,payTimer=null;
+const mailReady=()=>!!(window.emailjs&&EMAILJS_CFG.publicKey&&EMAILJS_CFG.serviceId&&EMAILJS_CFG.templateId);
+
+async function handleBookingSubmit(e){
+  e.preventDefault();
+  const form=e.target,btn=$('#submitBtn'),old=btn.textContent;
+  const data=Object.fromEntries(new FormData(form).entries());
+  const pm=(data['Gói Lặn Đăng Ký']||'').match(/[\d.]+\s*VNĐ/);
+  const info={amount:pm?pm[0]+(/^Combo/.test(data['Gói Lặn Đăng Ký']||'')?' / nhóm':' / khách'):'',num:pm?+pm[0].replace(/\D/g,''):0,
+    content:'SC'+Date.now().toString().slice(-6)};
+  const order={code:info.content,data,info,sent:false,server:false};
+  if(AUTO_API){
+    btn.textContent='Đang tạo mã thanh toán...';btn.disabled=true;
+    try{
+      const r=await fetch(AUTO_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data})}).then(r=>r.ok?r.json():Promise.reject());
+      if(r&&r.code){order.code=r.code;info.content=r.code;if(r.amount)info.num=r.amount;if(r.demo)order.demo=true;order.server=true}
+    }catch(_){}
+    btn.textContent=old;btn.disabled=false;
+  }
+  curOrder=order;form.reset();showPayment(info,true);
+}
+
+async function sendMails(o,paid){
+  const d=o.data,name=d['Họ Tên Khách Hàng']||'',mail=d['Email Liên Hệ']||'';
+  const details=['Mã đặt chỗ: '+o.code,'Họ tên: '+name,'Số điện thoại: '+(d['Số Điện Thoại']||''),'Email: '+mail,
+    'Gói: '+(d['Gói Lặn Đăng Ký']||''),'Ngày khởi hành: '+(d['Ngày Khởi Hành']||''),'Khung giờ: '+(d['Khung Giờ']||''),
+    'Số tiền: '+o.info.amount,'Nội dung CK: '+o.code].join('\n');
+  if(!mailReady()){
+    const p=Object.assign({},d,{'Mã Đặt Chỗ':o.code,'Số Tiền Cần Chuyển Khoản':o.info.amount,'Nội Dung Chuyển Khoản':o.code,
+      'Trạng Thái':paid?'ĐÃ NHẬN TIỀN':'Khách báo đã chuyển khoản - cần đối soát',
+      _subject:'[SeaCrates] '+(paid?'ĐÃ THANH TOÁN':'Khách báo đã chuyển khoản')+' - '+name+' - '+o.code,_template:'table'});
+    const r=await fetch('https://formsubmit.co/ajax/'+EMAILJS_CFG.owner,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(p)}).then(r=>r.json());
+    if(r.success==='false'||r.success===false)throw new Error('send');
+    return;
+  }
+  emailjs.init({publicKey:EMAILJS_CFG.publicKey});
+  const send=x=>emailjs.send(EMAILJS_CFG.serviceId,EMAILJS_CFG.templateId,Object.assign({order_code:o.code,name,details},x));
+  await Promise.all([
+    send({to_email:EMAILJS_CFG.owner,subject:'[SeaCrates] '+(paid?'Khách '+name+' đã đặt chỗ & thanh toán':'Khách '+name+' báo đã chuyển khoản')+' - '+o.code,
+      headline:paid?'Có khách vừa đặt chỗ thành công':'Khách vừa báo đã chuyển khoản',
+      message:paid?'Hệ thống đã nhận tiền cho đơn này.':'Vui lòng kiểm tra app ngân hàng và đối soát theo mã đơn.'}),
+    send({to_email:mail,subject:paid?'SeaCrates - Bạn đã đặt chỗ thành công ('+o.code+')':'SeaCrates - Đã nhận yêu cầu đặt chỗ ('+o.code+')',
+      headline:paid?'Chào '+name+', bạn đã đặt chỗ thành công!':'Chào '+name+', SeaCrates đã nhận yêu cầu đặt chỗ của bạn',
+      message:paid?'SeaCrates đã nhận được thanh toán. Hẹn gặp bạn ở đại dương!':'SeaCrates sẽ đối soát khoản chuyển khoản và xác nhận chính thức với bạn trong thời gian sớm nhất.'})
+  ]);
+}
+
+async function confirmPay(paid){
+  const o=curOrder;if(!o||o.sent)return;
+  o.sent=true;const st=$('#payStatus'),btn=$('#payDone'),mail=o.data['Email Liên Hệ']||'';
+  btn.disabled=true;st.textContent='Đang gửi xác nhận...';
+  try{
+    if(o.demo&&!paid){
+      const r=await fetch('/api/demo-confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:o.code})}).then(r=>r.ok?r.json():Promise.reject());
+      if(!r||!r.paid)throw new Error('demo');paid=true;
+    }else if(!(paid&&o.server))await sendMails(o,paid);
+    st.textContent=paid?'✔ Đặt chỗ thành công! Email xác nhận đã gửi tới '+mail
+      :'✔ Đã ghi nhận. SeaCrates sẽ đối soát và xác nhận qua email '+mail;
+    btn.style.display='none';stopPoll();
+  }catch(err){
+    o.sent=false;btn.disabled=false;
+    st.textContent='Chưa gửi được xác nhận. Bạn thử bấm lại, hoặc gửi mã '+o.code+' về seacratesinc@gmail.com.';
+  }
+}
+function startPoll(){
+  stopPoll();if(!AUTO_API||!curOrder||!curOrder.server)return;
+  payTimer=setInterval(()=>{if(!curOrder)return;
+    fetch(AUTO_API+(AUTO_API.includes('?')?'&':'?')+'code='+encodeURIComponent(curOrder.code)).then(r=>r.json())
+      .then(r=>{if(r&&r.paid)confirmPay(true);else if(r&&r.status==='partial')$('#payStatus').textContent='Đã nhận '+(+r.received).toLocaleString('vi-VN')+'đ, còn thiếu so với mức giữ chỗ. SeaCrates sẽ liên hệ bạn.'}).catch(()=>{});},3000);
+}
+function stopPoll(){if(payTimer){clearInterval(payTimer);payTimer=null}}
+
+// thanh toán QR (VietQR)
+// >>> ĐIỀN THÔNG TIN NGÂN HÀNG THẬT CỦA SEACRATES TẠI ĐÂY <<<
+const QR_CFG={bank:'ICB',label:'VietinBank',account:'105876508419',name:'DAM KIEN DUC'}; // VietinBank = ICB
+const vietqrUrl=(amount,note)=>`https://img.vietqr.io/image/${QR_CFG.bank}-${QR_CFG.account}-qr_only.png?amount=${amount}&addInfo=${encodeURIComponent(note)}&accountName=${encodeURIComponent(QR_CFG.name)}`;
+function mountQr(box,amount,note,onFail){
+  box.innerHTML='<div class="qr-card"><div class="qr-top"><span>SEACRATES</span><span>VIETQR</span></div><div class="qr-frame"><img class="qr-img" alt="Mã VietQR thanh toán SeaCrates"><i class="qr-scan"></i></div><div class="qr-bank"><strong></strong><span></span><small></small></div></div>';
+  box.querySelector('strong').textContent=QR_CFG.name;box.querySelector('.qr-bank span').textContent=QR_CFG.account;box.querySelector('small').textContent=QR_CFG.label;
+  const im=box.querySelector('img');im.onerror=onFail;im.src=vietqrUrl(amount,note);
+}
+const qpAmount=$('#qpAmount'),qpContent=$('#qpContent'),qpOut=$('#qpOut');
+const qpChips=$$('.qp-chip');
+const qpMark=()=>{const d=qpAmount.value.replace(/\D/g,'');qpChips.forEach(c=>c.classList.toggle('on',c.dataset.v===d))};
+qpAmount.addEventListener('input',()=>{const d=qpAmount.value.replace(/\D/g,'').slice(0,10);qpAmount.value=d?(+d).toLocaleString('vi-VN'):'';qpMark()});
+qpChips.forEach(c=>c.onclick=()=>{qpAmount.value=(+c.dataset.v).toLocaleString('vi-VN');qpMark()});
+function qpMsg(t){qpOut.innerHTML='<p class="qp-msg"></p>';qpOut.firstChild.textContent=t}
+function qpGen(e){
+  e.preventDefault();
+  const amount=+qpAmount.value.replace(/\D/g,'');
+  if(amount<1000){qpMsg('Vui lòng nhập số tiền hợp lệ (tối thiểu 1.000đ).');return}
+  if(!QR_CFG.account){qpMsg('Chưa cấu hình số tài khoản nhận tiền. Vui lòng liên hệ SeaCrates qua email để được hướng dẫn chuyển khoản.');return}
+  const noAccent=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const code='SC'+Date.now().toString().slice(-6);
+  const note=(code+' '+noAccent(qpContent.value)).trim().slice(0,50);
+  qpOut.innerHTML='<div id="qpCard" style="width:100%"></div><div class="qp-info"><div><span>Số tiền</span><strong id="qpA"></strong></div><div><span>Mã đơn hàng</span><strong id="qpC"></strong></div><div><span>Nội dung CK</span><strong id="qpN"></strong></div></div><button type="button" class="btn btn-ghost" id="qpCopy">Sao chép nội dung</button>';
+  $('#qpA').textContent=amount.toLocaleString('vi-VN')+' đ';$('#qpC').textContent=code;$('#qpN').textContent=note;
+  mountQr($('#qpCard'),amount,note,()=>qpMsg('Không tải được mã QR. Vui lòng kiểm tra kết nối mạng và thử lại.'));
+  $('#qpCopy').onclick=function(){
+    (navigator.clipboard?navigator.clipboard.writeText(note):Promise.reject())
+      .then(()=>{this.textContent='Đã sao chép ✔';setTimeout(()=>this.textContent='Sao chép nội dung',2000)}).catch(()=>{});
+  };
+}
+
+// chính sách
+const pm=$('#policyModal');
+function openPolicy(){pm.classList.add('open');document.body.style.overflow='hidden'}
+function closePolicy(){pm.classList.remove('open');document.body.style.overflow=''}
+addEventListener('click',e=>{if(e.target===modal)closeModal();if(e.target===pm)closePolicy()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closePolicy()}});
+
+// ===== ĐIỀU HƯỚNG 5 TRANG + HIỆU ỨNG CHUYỂN =====
+const PAGE_NAME={home:'SeaCrates',concept:'Kỷ nguyên thám hiểm',itinerary:'Nhật ký hành trình',safety:'Bảo chứng an toàn',ebook:'Ebook',pricing:'Giá & Đặt lịch'};
+const RMQ=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const veil=$('#veil');
+let curPage=null,navBusy=false,pendingId=null;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const pageEl=n=>document.querySelector('.page[data-page="'+n+'"]');
+function isTop(el,pg){return el.id==='top'||el===pg.firstElementChild}
+function showPage(name,el){
+  curPage=name;
+  $$('.page').forEach(p=>p.classList.toggle('act',p.dataset.page===name));
+  document.body.dataset.page=name;
+  $$('.links a[data-p]').forEach(a=>a.classList.toggle('act',a.dataset.p===name));
+  $('#nav').classList.remove('open');
+  document.title=(name==='home'?'':PAGE_NAME[name]+' · ')+'SeaCrates — Find Your Deepest Seacrates';
+  const pg=pageEl(name);
+  pg.querySelectorAll('.rv').forEach(r=>{r.classList.remove('show');io.unobserve(r)});
+  void pg.offsetWidth;
+  pg.querySelectorAll('.rv').forEach(r=>io.observe(r));
+  pg.classList.remove('enter');void pg.offsetWidth;if(!RMQ&&curPage)pg.classList.add('enter');
+  const top=isTop(el,pg)?0:Math.max(0,el.getBoundingClientRect().top+scrollY-84);
+  scrollTo({top:top,behavior:'instant'});
+}
+// bọt thở: ít bọt hơn, chỉ transform/opacity (chạy trên compositor), tái dùng DOM
+const breathBox=$('#breath');
+function breathe(){
+  if(RMQ)return;
+  const W=innerWidth,H=innerHeight,small=W<700;
+  const frag=document.createDocumentFragment(),list=[];
+  [.2,.5,.8].forEach((f,ei)=>{
+    const x0=f*W+(Math.random()-.5)*90;
+    for(let burst=0;burst<2;burst++){
+      const n=(small?3:4)+Math.floor(Math.random()*3);
+      for(let i=0;i<n;i++){
+        const b=document.createElement('b'),sz=6+Math.random()*(burst?22:13);
+        const delay=ei*180+burst*380+i*(40+Math.random()*60);
+        const dur=(1300+Math.random()*800-sz*14)*1.4;
+        const wob=8+Math.random()*22,drift=(Math.random()-.5)*60;
+        b.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(x0-sz/2)+'px';
+        frag.appendChild(b);
+        list.push([b,[
+          {transform:'translate3d(0,0,0) scale(.5)',opacity:0},
+          {transform:'translate3d('+wob+'px,'+(-H*.2)+'px,0) scale(.8)',opacity:.95,offset:.15},
+          {transform:'translate3d('+(-wob+drift*.4)+'px,'+(-H*.5)+'px,0) scale(1)',opacity:.9,offset:.45},
+          {transform:'translate3d('+(wob+drift*.8)+'px,'+(-H*.8)+'px,0) scale(1.1)',opacity:.75,offset:.75},
+          {transform:'translate3d('+drift+'px,'+(-H*1.12)+'px,0) scale(1.2)',opacity:0}
+        ],{duration:dur,delay:delay,easing:'cubic-bezier(.3,.1,.5,1)',fill:'both'}]);
+      }
+    }
+  });
+  breathBox.appendChild(frag);            // 1 lần ghi DOM
+  list.forEach(([b,kf,o])=>{b.animate(kf,o).onfinish=()=>b.remove()});
+}
+const nextFrame=()=>new Promise(r=>requestAnimationFrame(()=>r()));
+const idle=(fn)=>('requestIdleCallback' in window)?requestIdleCallback(fn,{timeout:300}):setTimeout(fn,16);
+// Chuẩn bị trang đích trong lúc sóng đang dâng: tải + giải mã ảnh, tính sẵn style/layout ngoài màn hình
+async function prewarm(pg){
+  const imgs=[...pg.querySelectorAll('img')];
+  imgs.forEach(i=>{i.loading='eager';i.decoding='async'});
+  pg.classList.add('pre');                 // display:block nhưng cao 0, ẩn → layout/style được tính trước
+  const decodes=imgs.map(i=>i.decode?i.decode().catch(()=>{}):Promise.resolve());
+  await Promise.race([Promise.all(decodes),sleep(600)]);   // không chờ quá 1.1s
+  await new Promise(r=>idle(r));
+  pg.classList.remove('pre');
+}
+async function go(id,push){
+  const el=document.getElementById(id);if(!el)return;
+  const pg=el.closest('.page');if(!pg)return;
+  const name=pg.dataset.page;
+  if(push)history.pushState(null,'','#'+id);
+  if(name===curPage){
+    if(isTop(el,pg))scrollTo({top:0,behavior:'smooth'});else el.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+  if(navBusy){pendingId=id;return}
+  if(RMQ||curPage===null){showPage(name,el);return}
+  navBusy=true;
+  const root=document.documentElement;
+  root.classList.add('vt');                // tạm dừng hiệu ứng nền nặng trong lúc chuyển
+  veil.classList.add('on');
+  const ease='cubic-bezier(.65,0,.35,1)';
+  const up=veil.animate([{transform:'translate3d(0,calc(100% + 130px),0)'},{transform:'translate3d(0,0,0)'}],{duration:550,easing:ease,fill:'forwards'});
+  await nextFrame();                       // để sóng chạy trước (compositor), rồi mới làm việc nặng
+  breathe();
+  const warm=prewarm(pg);
+  await Promise.all([up.finished,warm]);   // chỉ đổi trang khi sóng đã phủ kín VÀ trang đích đã sẵn sàng
+  showPage(name,el);
+  await nextFrame();await nextFrame();     // cho trình duyệt vẽ xong trang mới dưới lớp sóng
+  await sleep(60);
+  const down=veil.animate([{transform:'translate3d(0,0,0)'},{transform:'translate3d(0,calc(-100% - 80px),0)'}],{duration:650,easing:ease,fill:'forwards'});
+  await down.finished;
+  veil.getAnimations().forEach(a=>a.cancel());veil.classList.remove('on');
+  setTimeout(()=>root.classList.remove('vt'),300);   // bật lại hiệu ứng nền sau khi trang vào xong
+  navBusy=false;
+  if(pendingId){const p=pendingId;pendingId=null;go(p,false)}
+}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href^="#"]');if(!a||a.getAttribute('href')==='#')return;
+  const id=a.getAttribute('href').slice(1);if(!document.getElementById(id))return;
+  e.preventDefault();go(id,true);
+});
+addEventListener('popstate',()=>go((location.hash||'#top').slice(1),false));
+(function(){
+  const id=(location.hash||'#top').slice(1);
+  if(id==='policy'){go('packages',false);openPolicy();return}
+  go(document.getElementById(id)?id:'top',false);
+})();
+
+// ===== HIỆU ỨNG TỪ STRATUM: decode chữ + parallax =====
+(function(){
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches,CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ',DUR=400,DECODE=false;
+  var labels=[];
+  document.querySelectorAll('.links a,.nav-in>.btn,.tag,.cue,.hero .btn,.cta .btn,.pk .btn,.tab').forEach(function(el){
+    var n=null;
+    for(var i=0;i<el.childNodes.length;i++){var c=el.childNodes[i];if(c.nodeType===3&&c.nodeValue.trim()){n=c;break}}
+    if(!n)return;
+    var s=document.createElement('span');s.className='t';s.textContent=n.nodeValue.trim();s.dataset.text=s.textContent;
+    el.replaceChild(s,n);labels.push(s);
+    if(el.matches('a,button'))el.addEventListener('pointerenter',function(){decode(s)});
+  });
+  function reserve(s){ // giữ độ rộng tự nhiên để chữ không làm xô bố cục
+    if(s._w)return;var w=s.getBoundingClientRect().width;
+    if(w>0){s._w=1;s.style.minWidth=Math.ceil(w*100)/100+'px'}
+  }
+  function settleLbl(s){
+    if(s._raf){cancelAnimationFrame(s._raf);s._raf=0}
+    if(s._t){clearTimeout(s._t);s._t=0}
+    s.textContent=s.dataset.text;
+  }
+  function decode(s){
+    settleLbl(s);if(RM||!DECODE)return;reserve(s);
+    var text=s.dataset.text,n=text.length,t0=performance.now(),last=0,rand=[];
+    function roll(){for(var i=0;i<n;i++)rand[i]=CH.charAt((Math.random()*26)|0)}roll();
+    function step(now){
+      var p=Math.min(1,(now-t0)/DUR),front=p*n,out='',i;
+      if(now-last>45){roll();last=now}
+      for(i=0;i<n;i++){
+        var c=text.charAt(i);
+        if(i<front)out+=c;else if(i<front+3.6)out+=(c===' '?' ':rand[i]);else break;
+      }
+      s.textContent=out;
+      if(p<1)s._raf=requestAnimationFrame(step);else settleLbl(s);
+    }
+    s._raf=requestAnimationFrame(step);
+    s._t=setTimeout(function(){settleLbl(s)},DUR+500);
+  }
+  function at(sel,t0,step){
+    document.querySelectorAll(sel).forEach(function(el,i){setTimeout(function(){decode(el)},t0+i*(step||0))});
+  }
+  function boot(){
+    if(RM||!DECODE)return;
+    at('.nav-in>.btn .t',330);
+    at('.links a .t',360,45);
+    at('.hero .tag .t',450);
+    at('.hero .btn .t',900,80);
+    at('.cue .t',1100);
+    // nhãn ở các mục phía dưới decode khi cuộn tới
+    var tio=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){decode(e.target);tio.unobserve(e.target)}
+    })},{threshold:.6});
+    document.querySelectorAll('.section .tag .t').forEach(function(t){tio.observe(t)});
+    setTimeout(function(){labels.forEach(settleLbl)},2600);
+  }
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(boot);else addEventListener('load',boot);
+  addEventListener('resize',function(){labels.forEach(function(s){s._w=0;s.style.minWidth=''})});
+
+  // parallax: nền trôi ngược hướng con trỏ, ảnh hero lệch nhẹ (chỉ chuột, không phải cảm ứng)
+  var bgEl=document.querySelector('.bg'),media=document.querySelector('.hero-media');
+  var tx=0,ty=0,cx=0,cy=0,run=false;
+  function tick(){
+    cx+=(tx-cx)*.045;cy+=(ty-cy)*.045;
+    var w=innerWidth,h=innerHeight,dx=-cx*w*.0156,dy=-cy*h*.015;
+    var sc=1+2*Math.max(Math.abs(dx)/w,Math.abs(dy)/h)+.014*Math.max(0,cy);
+    bgEl.style.transform='translate3d('+dx.toFixed(2)+'px,'+dy.toFixed(2)+'px,0) scale('+sc.toFixed(4)+')';
+    if(media)media.style.transform='translate3d('+(-cx*14).toFixed(2)+'px,'+(-cy*14).toFixed(2)+'px,0)';
+    if(Math.abs(tx-cx)<.0004&&Math.abs(ty-cy)<.0004){run=false;return}
+    requestAnimationFrame(tick);
+  }
+  function wake(){if(!run&&!RM){run=true;requestAnimationFrame(tick)}}
+  addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch')return;
+    tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;wake();
+  },{passive:true});
+  document.addEventListener('pointerleave',function(){tx=0;ty=0;wake()});
+})();
+
+// ===== COMBO NHÓM: đổi loại vé, tự tính giá, đặt combo =====
+(function(){
+  const COMBOS=[{n:2,off:5,name:'SEAMATES'},{n:4,off:7,name:'SeaSquad'},{n:6,off:9,name:'Ocean’s Six'}];
+  const TIERS=[{price:1500000,lbl:'Không Divemaster'},{price:2000000,lbl:'Có Divemaster'}];
+  let tier=TIERS[0];
+  const fmt=n=>n.toLocaleString('vi-VN');
+  const total=(t,c)=>Math.round(t.price*c.n*(100-c.off)/100);
+  const optText=(t,c)=>'Combo '+c.n+' người — '+c.name+' ('+t.lbl+') — '+fmt(total(t,c))+' VNĐ';
+  // thêm combo vào ô chọn gói trong form đặt chỗ
+  TIERS.forEach(t=>COMBOS.forEach(c=>{const o=document.createElement('option');o.textContent=optText(t,c);pkgSel.appendChild(o)}));
+  function tween(el,to){
+    const from=el._v==null?to:el._v,t0=performance.now();el._v=to;
+    if(RMQ||from===to){el.textContent=fmt(to);return}
+    const f=t=>{const k=Math.min(1,(t-t0)/600),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));el.textContent=fmt(v);if(k<1)requestAnimationFrame(f)};
+    requestAnimationFrame(f);
+  }
+  function render(){
+    $$('.cb').forEach(el=>{
+      const c=COMBOS.find(x=>x.n==el.dataset.n),tot=total(tier,c);
+      el.querySelector('.cb-old').textContent=fmt(tier.price*c.n);
+      tween(el.querySelector('.cb-new'),tot);
+      tween(el.querySelector('.cb-pp'),Math.round(tot/c.n));
+    });
+  }
+  $$('.cb-t').forEach((b,i)=>b.onclick=()=>{
+    $$('.cb-t').forEach(x=>x.classList.toggle('on',x===b));
+    tier=TIERS[i];render();
+  });
+  $$('.cb').forEach(el=>{
+    const c=COMBOS.find(x=>x.n==el.dataset.n);
+    el.querySelector('.cb-book').onclick=()=>openModal('Combo '+c.n+' người · '+c.name,optText(tier,c));
+    el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-r.left)+'px');el.style.setProperty('--my',(e.clientY-r.top)+'px')});
+  });
+  render();
+})();
+
+// ===== LIVE CHAT AI (gộp FAQ: câu hỏi có sẵn luôn hiển thị) =====
+(function(){
+  const chat=$('#chat'),log=$('#chatLog'),inp=$('#chatInput'),fab=$('#chatFab'),panel=$('#chatPanel');
+  const norm=t=>(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const STOP=new Set('toi la co khong duoc the nao nhu va cua minh ban cho thi nay voi ah ni hay vay roi nhe ko k gi a o de em anh chi cac may nhung nhieu mot'.split(' '));
+  const toks=t=>norm(t).split(' ').filter(w=>w&&!STOP.has(w));
+  const ITEMS=[];FAQ.forEach(g=>g.items.forEach(it=>ITEMS.push({q:it.q,a:it.a,set:new Set(toks(it.q+' '+it.k)),qset:new Set(toks(it.q))})));
+  const SHORT=['Giá & Ưu đãi','An toàn & Kỹ thuật','Kho báu','Đặt vé & Hoàn/Hủy'];
+  const ITEM_OF=new Map();let _k=0;
+  FAQ.forEach(g=>g.items.forEach(it=>{ITEM_OF.set(it.q,ITEMS[_k++])}));
+  const MAIL='seacratesinc@gmail.com',HOT='+84 1800 9999';
+  let greeted=false,busy=false;
+
+  function add(text,cls){const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+  function chips(list){
+    if(!list.length)return;
+    const w=document.createElement('div');w.className='chat-chips';
+    list.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='chat-chip';b.textContent=c.label;b.onclick=()=>{w.remove();c.fn?c.fn():ask(c.label)};w.appendChild(b)});
+    log.appendChild(w);log.scrollTop=log.scrollHeight;
+  }
+  function reply(text,chipList){
+    busy=true;
+    const t=document.createElement('div');t.className='msg bot typing';t.innerHTML='<i></i><i></i><i></i>';log.appendChild(t);log.scrollTop=log.scrollHeight;
+    setTimeout(()=>{t.remove();add(text,'bot');chips(chipList||[]);busy=false},550+Math.min(text.length*3,700));
+  }
+  const topChips=()=>[
+    {label:'Đặt lịch ngay',fn:()=>{reply('Mình mở form đặt lịch cho bạn nhé!');setTimeout(()=>{closeChat();openModal('Thiết lập chuyến đi')},900)}}
+  ];
+  function best(q){
+    const qt=toks(q);if(!qt.length)return{list:[],score:0};
+    const scored=ITEMS.map(it=>{let s=0;qt.forEach(w=>{if(it.set.has(w))s+=it.qset.has(w)?1.2:1});return{it,s}}).sort((a,b)=>b.s-a.s);
+    return{list:scored.filter(x=>x.s>0).slice(0,3),score:scored[0].s,n:qt.length};
+  }
+  function answer(q){
+    const n=norm(q),r=best(q);
+    if((/\bgia\b|bao nhieu tien|chi phi|combo/.test(n))&&n.split(' ').length<=5&&!/bao gom|gom nhung|hoan|huy|goi 1|goi 2|1tr5|2tr/.test(n))return ['Bảng giá hiện tại:\n• The Discovery (có Divemaster): 2.000.000đ/khách\n• The Explorer (không Divemaster, cần chứng nhận Open Water): 1.500.000đ/khách\n• Combo nhóm: giảm 5% (2 người), 7% (4 người), 9% (6 người).',[{label:'Xem trang Giá',fn:()=>{closeChat();go('packages',true)}},{label:'Giá vé gồm những gì?',fn:()=>askItem(ITEMS[0])}]];
+    if(r.score>=2||(r.n<=2&&r.score>=1.2)){
+      const more=r.list.slice(1).filter(x=>x.s>=Math.max(1,r.score-1)).map(x=>({label:x.it.q,fn:()=>askItem(x.it)}));
+      return[r.list[0].it.a,more];
+    }
+    if(/^(xin chao|chao|hello|hi|hey|alo)\b/.test(n))return['Xin chào! Mình là trợ lý AI của SeaCrates. Bạn muốn hỏi về giá vé, an toàn, địa điểm hay cách đặt lịch?',topChips()];
+    if(/cam on|thanks|thank/.test(n))return['Rất vui được hỗ trợ bạn! Nếu cần hỏi thêm, cứ nhắn mình bất cứ lúc nào nhé.',[]];
+    if(/dat lich|dat ve|dat cho|dang ky|book/.test(n))return['Bạn có thể đặt lịch trực tuyến ngay trên website. Mình mở form giúp bạn nhé?',[{label:'Mở form đặt lịch',fn:()=>{closeChat();openModal('Thiết lập chuyến đi')}},{label:'Xem bảng giá',fn:()=>{closeChat();go('packages',true)}}]];
+    if(/thoi gian|may gio|bao lau|lich trinh|hanh trinh/.test(n))return['Hành trình kéo dài khoảng 4 tiếng, từ 07:30 đến 11:30 (khung Bình Minh Đại Dương), gồm đón khách, hướng dẫn an toàn, 45 phút lặn tìm kho báu, trao thưởng và teabreak trên boong. Ngoài ra còn khung Hoàng Hôn Khơi Xa 13:00–17:00.',[{label:'Xem nhật ký hành trình',fn:()=>{closeChat();go('itinerary',true)}}]];
+    return['Mình chưa tìm thấy câu trả lời chính xác cho câu hỏi này. Bạn thử diễn đạt khác, chọn một câu hỏi có sẵn ở khung bên dưới, hoặc liên hệ tư vấn viên: email '+MAIL+' / hotline '+HOT+'.',topChips()];
+  }
+  function askItem(it){if(busy)return;add(it.q,'me');reply(it.a,[])}
+  function ask(q){
+    if(busy)return;q=q.trim();if(!q)return;
+    add(q,'me');
+    const [a,c]=answer(q);reply(a,c);
+  }
+  function greet(){
+    if(greeted)return;greeted=true;
+    reply('Xin chào! Mình là trợ lý AI của SeaCrates. Mình có thể giải đáp về giá vé, an toàn, trải nghiệm tìm kho báu và chính sách hoàn/hủy. Bạn chọn một câu hỏi có sẵn bên dưới hoặc tự nhập câu hỏi nhé!');
+  }
+  (function dock(){
+    const tabs=$('#dockTabs'),list=$('#dockList');let cur=0;
+    function show(i){
+      cur=i;
+      tabs.querySelectorAll('.dock-tab').forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i)});
+      list.innerHTML='';list.scrollTop=0;
+      FAQ[i].items.forEach(it=>{const b=document.createElement('button');b.type='button';b.className='dock-q';b.textContent=it.q;b.onclick=()=>askItem(ITEM_OF.get(it.q));list.appendChild(b)});
+    }
+    FAQ.forEach((g,i)=>{const b=document.createElement('button');b.type='button';b.className='dock-tab';b.setAttribute('role','tab');b.textContent=SHORT[i]||g.t;b.onclick=()=>show(i);tabs.appendChild(b)});
+    show(0);
+  })();
+  function openChat(){chat.classList.add('open');fab.setAttribute('aria-expanded','true');panel.setAttribute('aria-hidden','false');greet();setTimeout(()=>inp.focus({preventScroll:true}),350)}
+  function closeChat(){chat.classList.remove('open');fab.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true')}
+  window.openChat=openChat;window.closeChat=closeChat;
+  fab.onclick=()=>chat.classList.contains('open')?closeChat():openChat();
+  $('#chatClose').onclick=closeChat;
+  $('#chatForm').onsubmit=e=>{e.preventDefault();const v=inp.value;inp.value='';ask(v)};
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&chat.classList.contains('open')&&!modal.classList.contains('open')&&!pm.classList.contains('open'))closeChat()});
+})();
+</script>
+<script>
+(function(){
+var P=[{n:'Hòn Mun',la:12.17,lo:109.30},{n:'An Thới',la:10.02,lo:104.01},{n:'Phú Quý',la:10.52,lo:108.93}];
+var box=document.getElementById('wxDays'),cache={},cur=0;
+if(!box)return;
+function wc(c){if(c===0)return['☀️','Trời nắng'];if(c<=2)return['⛅','Ít mây'];if(c===3)return['☁️','Nhiều mây'];if(c<=48)return['🌫️','Sương mù'];if(c<=57)return['🌦️','Mưa phùn'];if(c<=67)return['🌧️','Có mưa'];if(c<=82)return['🌦️','Mưa rào'];return['⛈️','Dông']}
+var ANCHOR=Date.UTC(2026,9,12); // mốc bắt đầu: 12/10/2026, mỗi giai đoạn 3 ngày
+function pad(n){return n<10?'0'+n:''+n}
+function iso(ms){var d=new Date(ms);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())}
+function block(){var n=new Date(Date.now()+7*3600000),t=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate());
+  var i=Math.max(0,Math.floor((t-ANCHOR)/864e5/3)),s=ANCHOR+i*3*864e5;return{today:iso(t),days:[iso(s),iso(s+864e5),iso(s+2*864e5)]}}
+var DN=['CN','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'];
+function fmt(d){var x=new Date(d+'T00:00:00');return DN[x.getDay()]+', '+x.getDate()+'/'+(x.getMonth()+1)}
+function r(v){return Math.round(v)}
+function get(u){return fetch(u).then(function(x){if(!x.ok)throw 0;return x.json()})}
+function load(k){
+  if(cache[k])return Promise.resolve(cache[k]);
+  var p=P[k],q='latitude='+p.la+'&longitude='+p.lo+'&timezone=Asia%2FBangkok&past_days=2&forecast_days=3';
+  var a=get('https://api.open-meteo.com/v1/forecast?'+q+'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max');
+  var b=get('https://marine-api.open-meteo.com/v1/marine?'+q+'&daily=wave_height_max').catch(function(){return null});
+  return Promise.all([a,b]).then(function(v){cache[k]=v;return v});
+}
+function draw(k,v){
+  var d=v[0].daily,w=v[1]&&v[1].daily&&v[1].daily.wave_height_max,h='',B=block();
+  for(var i=0;i<d.time.length;i++){
+    if(B.days.indexOf(d.time[i])<0)continue;
+    var c=wc(d.weather_code[i]),wave=(w&&w[i]!=null)?'<small>🌊 Sóng cao '+w[i].toFixed(1)+' m</small>':'';
+    h+='<div class="wx-d'+(d.time[i]<B.today?' past':'')+'"><b>'+fmt(d.time[i])+(d.time[i]===B.today?' · hôm nay':'')+'</b><div class="ic">'+c[0]+'</div><div class="t">'+r(d.temperature_2m_min[i])+'–'+r(d.temperature_2m_max[i])+'°C</div><small>'+c[1]+' · mưa '+(d.precipitation_probability_max[i]==null?'–':d.precipitation_probability_max[i]+'%')+'</small><small>💨 Gió tối đa '+r(d.wind_speed_10m_max[i])+' km/h</small>'+wave+'</div>';
+  }
+  box.innerHTML=h||'<div class="wx-msg">Chưa có dữ liệu cho giai đoạn này.</div>';
+}
+function show(k){
+  cur=k;box.innerHTML='<div class="wx-msg">Đang tải dự báo…</div>';
+  load(k).then(function(v){if(cur===k)draw(k,v)}).catch(function(){if(cur===k)box.innerHTML='<div class="wx-msg">Chưa tải được dự báo. Bạn vui lòng bấm nút KTTV quốc gia bên dưới để xem trực tiếp.</div>'});
+}
+document.querySelectorAll('.wx-tab').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.wx-tab').forEach(function(x){x.classList.toggle('on',x===b)});show(+b.dataset.k)})});
+show(0);
+})();
+</script>
+
+<script>
+// ===== NGHIÊNG 3D THEO CON TRỎ + THỨ TỰ LẬT VÀO =====
+(function(){
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SEL='.xp:not(.qp-card),.cb,.portal,.loc,.wx-d,.gallery>div,.qr-card';
+  var EASE='cubic-bezier(.22,1,.36,1)';
+  // gán thứ tự để các thẻ lật vào lần lượt (stagger)
+  function stagger(root){
+    root.querySelectorAll('.rv').forEach(function(rv){
+      var kids=rv.querySelectorAll(SEL),i=0;
+      kids.forEach(function(k){k.style.setProperty('--i',Math.min(i++,8))});
+      if(rv.matches(SEL))rv.style.setProperty('--i',0);
+    });
+  }
+  stagger(document);
+  if(RM)return;
+  var cur=null,raf=0,ev=null,rc=null;
+  addEventListener('scroll',function(){rc=null},{passive:true});
+  function reset(el){
+    if(!el)return;
+    el.style.transition='transform .75s '+EASE+',border-color .4s,box-shadow .4s';
+    el.style.transform='';
+    clearTimeout(el._t);el._t=setTimeout(function(){el.style.transition=''},780);
+  }
+  function apply(){
+    raf=0;if(!ev)return;
+    var el=ev.target.closest&&ev.target.closest(SEL);
+    if(el!==cur){reset(cur);cur=el;rc=null}
+    if(!el)return;
+    var r=rc||(rc=el.getBoundingClientRect());if(!r.width||!r.height)return;
+    var px=(ev.clientX-r.left)/r.width,py=(ev.clientY-r.top)/r.height;
+    px=Math.max(0,Math.min(1,px));py=Math.max(0,Math.min(1,py));
+    var max=Math.max(3.5,Math.min(11,4200/r.width));      // thẻ càng rộng càng nghiêng nhẹ
+    var ry=(px-.5)*2*max,rx=-(py-.5)*2*max;
+    el.style.transition='transform .14s ease-out,border-color .4s,box-shadow .4s';
+    el.style.transform='perspective(1000px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translate3d(0,-6px,0) scale(1.012)';
+    el.style.setProperty('--gx',(px*100).toFixed(1)+'%');el.style.setProperty('--gy',(py*100).toFixed(1)+'%');
+    el.style.setProperty('--mx',(px*r.width).toFixed(0)+'px');el.style.setProperty('--my',(py*r.height).toFixed(0)+'px');
+  }
+  addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch')return;
+    ev=e;if(!raf)raf=requestAnimationFrame(apply);
+  },{passive:true});
+  document.addEventListener('pointerleave',function(){reset(cur);cur=null;ev=null});
+  addEventListener('blur',function(){reset(cur);cur=null});
+  // đổi trang: bỏ trạng thái nghiêng còn sót
+  document.addEventListener('click',function(){if(cur){reset(cur);cur=null}},true);
+})();
+</script>
+
+<script>
+// ===== CON TRỎ ĐÈN LẶN =====
+(function(){
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  var root=document.documentElement;
+  var lamp=document.createElement('div');lamp.className='lamp';lamp.setAttribute('aria-hidden','true');
+  lamp.innerHTML='<i class="lamp-beam"></i><i class="lamp-core"></i>';
+  document.body.appendChild(lamp);
+  var beam=lamp.firstChild,core=lamp.lastChild;
+  var tx=innerWidth/2,ty=innerHeight/3,bx=tx,by=ty,run=false;
+  var HOT='a,button,input,select,textarea,label,summary,[role=button],[role=tab],.xp-h,.chat-fab';
+  function frame(){
+    bx+=(tx-bx)*.14;by+=(ty-by)*.14;   // chùm sáng trễ nhẹ, trôi như ánh đèn trong nước
+    beam.style.transform='translate3d('+bx.toFixed(1)+'px,'+by.toFixed(1)+'px,0)';
+    if(Math.abs(tx-bx)<.1&&Math.abs(ty-by)<.1){run=false;return}
+    requestAnimationFrame(frame);
+  }
+  function wake(){if(!run){run=true;requestAnimationFrame(frame)}}
+  addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch')return;
+    if(!root.classList.contains('has-lamp')){root.classList.add('has-lamp');bx=e.clientX;by=e.clientY}
+    tx=e.clientX;ty=e.clientY;
+    core.style.transform='translate3d('+tx+'px,'+ty+'px,0)';   // chấm sáng bám sát con trỏ
+    lamp.classList.add('on');
+    lamp.classList.toggle('hot',!!(e.target.closest&&e.target.closest(HOT)));
+    wake();
+  },{passive:true});
+  addEventListener('pointerdown',function(){lamp.classList.add('down')});
+  addEventListener('pointerup',function(){lamp.classList.remove('down')});
+  document.addEventListener('pointerleave',function(){lamp.classList.remove('on')});
+  document.addEventListener('pointerenter',function(){lamp.classList.add('on')});
+})();
+</script>
+<script>
+// ===== EBOOK: toàn màn hình =====
+(function(){
+  var btn=document.getElementById('ebookFs'),box=document.querySelector('.ebook-box');
+  if(!btn||!box)return;
+  var rq=box.requestFullscreen||box.webkitRequestFullscreen;
+  if(!rq){btn.style.display='none';return}
+  btn.addEventListener('click',function(){
+    var f=document.fullscreenElement||document.webkitFullscreenElement;
+    if(f){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{rq.call(box)}
+  });
+  function sync(){var on=document.fullscreenElement||document.webkitFullscreenElement;btn.textContent=on?'Thoát toàn màn hình':'Xem toàn màn hình'}
+  document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);
+})();
+</script>
+</body>
+</html>
