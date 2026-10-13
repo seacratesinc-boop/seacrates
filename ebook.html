@@ -270,6 +270,52 @@ body.phone { -webkit-font-smoothing: antialiased; }
   .bub { animation: none; display: none; }
   .bar i { transition: none; }
 }
+
+/* ===== Phone polish: chữ rõ, khung gọn, ít trang trí gây rối mắt ===== */
+body.phone { padding-inline: 8px; padding-block: 8px 10px; margin: 0; box-sizing: border-box; }
+body.phone .room { gap: 8px; }
+body.phone .top { max-width: 560px; }
+body.phone .brand { font-size: 13px; letter-spacing: .1em; }
+body.phone .brand small { display: none; }
+body.phone .pill { font-size: 12.5px; padding: 8px 12px; min-height: 36px; }
+body.phone .stage { padding-block: 0; }
+body.phone .floor { display: none; }
+/* font: một họ sans duy nhất cho tiêu đề + nội dung (dấu tiếng Việt rõ, không lẫn font dự phòng) */
+body.phone .paper h2, body.phone .paper h3, body.phone .case h4, body.phone .idea b,
+body.phone .quote, body.phone .cover h1, body.phone .cv-box h1, body.phone .ph-top h1,
+body.phone .bk-mark b, body.phone .bk-mark span, body.phone .cv-id b, body.phone .ph-id b, body.phone .cover .mark {
+  font-family: var(--font-body);
+}
+body.phone .paper h2 { font-size: 24px; line-height: 1.3; font-weight: 700; letter-spacing: 0; }
+body.phone .paper h3 { font-size: 18px; line-height: 1.4; font-weight: 700; margin-top: 20px; }
+body.phone .case h4, body.phone .idea b { font-size: 16.5px; line-height: 1.45; font-weight: 700; }
+body.phone .quote { font-style: normal; font-weight: 600; font-size: 17.5px; line-height: 1.55; }
+body.phone .eyebrow, body.phone .cv-eye, body.phone .cover .ceye { letter-spacing: .08em; font-weight: 700; }
+body.phone .pfoot { letter-spacing: .06em; }
+body.phone .case .tag { letter-spacing: .04em; }
+/* trang giấy: nền phẳng, đọc dễ hơn */
+.book.single .paper { background: #f8f2e4; font-size: 16px; line-height: 1.7; hyphens: manual; overflow-wrap: break-word; }
+.book.single .face { border-radius: 10px; box-shadow: 0 6px 22px rgba(0,0,0,.35); }
+.book.single .face::after { display: none; }
+.book.single .scroll { padding: 22px 20px 6px; inset: 0 0 34px 0; }
+.book.single .paper p { margin-bottom: 12px; }
+.book.single .paper p.lead { font-size: 16.5px; line-height: 1.65; }
+.book.single .paper li { margin-bottom: 8px; }
+.book.single .pfoot { bottom: 12px; left: 20px; right: 20px; font-size: 10.5px; }
+/* bìa: bỏ khung đôi + hạt nhiễu, chữ gọn lại */
+.book.single .ph-frame { inset: 10px; border-color: rgba(242,184,75,.45); }
+.book.single .ph-frame::after { display: none; }
+.book.single .cover .frame { display: none; }
+.book.single .cover .ph-top { top: 30px; left: 26px; right: 26px; }
+.book.single .cover .ph-bottom { bottom: 28px; left: 26px; right: 26px; gap: 12px; }
+.book.single .ph-top h1, .book.single .cv-box h1 { font-size: clamp(24px, 7.4vw, 30px); line-height: 1.3; font-weight: 800; }
+.book.single .cv-sub { font-size: 14px; line-height: 1.65; }
+.book.single .bk-mark { bottom: 40px; }
+.book.single .bk-mark b { font-size: 20px; letter-spacing: .2em; padding-left: .2em; }
+.book.single .bk-mark span { font-size: 14.5px; font-style: normal; }
+body.phone .hint { font-size: 12.5px; color: #9db3c8; line-height: 1.4; }
+body.phone .controls { gap: 10px; max-width: 560px; }
+body.phone .nav { width: 44px; height: 44px; }
 </style>
 </head>
 <body>
@@ -857,7 +903,7 @@ try {
   function build() {
     single = isPhone();
     var hn = document.getElementById('hint');
-    if (hn) hn.textContent = single ? 'Vuốt ngang hoặc chạm mép trang để lật · vuốt dọc để đọc tiếp.' : 'Chạm vào mép trang, vuốt, hoặc dùng phím ← → để lật sách.';
+    if (hn) hn.textContent = single ? 'Vuốt ngang để lật trang · vuốt dọc để đọc' : 'Chạm vào mép trang, vuốt, hoặc dùng phím ← → để lật sách.';
     book.innerHTML = ''; leaves = [];
     book.className = 'book' + (single ? ' single' : '');
     document.body.classList.toggle('phone', single);
@@ -885,12 +931,17 @@ try {
   function maxPos() { return single ? N - 1 : N / 2; }
 
   function layout() {
-    var availW = document.documentElement.clientWidth - 32;
-    var availH = (window.visualViewport ? window.visualViewport.height : window.innerHeight) - 190;
+    var vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+    var availW = document.documentElement.clientWidth - (single ? 16 : 32);
+    var availH = vh - 190;
+    if (single) {
+      var q = function (c) { var e = document.querySelector(c); return e ? e.offsetHeight : 0; };
+      availH = vh - (q('.top') + q('.controls') + q('.hint') + 3 * 8 + 18 + 4);
+    }
     var bw, Hh, s;
     if (single) {
       bw = Math.max(280, Math.min(availW, 560));
-      Hh = Math.max(380, availH);
+      Hh = Math.max(300, availH);
       s = 1;
     } else {
       bw = 2 * W; Hh = H;
