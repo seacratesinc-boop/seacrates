@@ -1,0 +1,56 @@
+<!--
+  TEMPLATE EMAILJS CHO SEACRATES (dùng chung cho mail khách + mail chủ)
+  Trong EmailJS: Email Templates > Create New > Content > Edit Content > Code Editor, dán phần HTML bên dưới.
+  Settings của template:
+    To Email : {{to_email}}
+    Subject  : {{subject}}
+    From Name: SeaCrates
+    Reply To : seacratesinc@gmail.com
+  Biến dùng trong template: headline, message_vi, message_en, order_code, name, email, phone, package,
+  travel_date, time_slot, guests, amount, payment_method, status_vi, status_en, notes, pay_block (HTML, dùng {{{ }}})
+-->
+<div style="background:#eef2f3;padding:24px 12px;font-family:Arial,Helvetica,sans-serif;color:#1b2b30">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #dfe6e8">
+    <tr>
+      <td style="background:#041a25;padding:28px 32px">
+        <div style="font-size:26px;font-weight:700;color:#f6d365;letter-spacing:.5px">SeaCrates</div>
+        <div style="font-size:14px;color:#a9d6df;margin-top:6px">Booking Confirmation / Xác nhận đặt chỗ</div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:28px 32px">
+        <p style="margin:0 0 14px;font-size:18px;font-weight:700">{{headline}}</p>
+        <p style="margin:0 0 4px;font-size:15px;line-height:1.6">{{message_en}}</p>
+        <p style="margin:0 0 22px;font-size:14px;line-height:1.6;color:#5d6e73">{{message_vi}}</p>
+
+        <p style="margin:0 0 6px;font-size:14px;color:#5d6e73">Booking ID / Mã đặt chỗ: <b style="color:#1b2b30">{{order_code}}</b></p>
+        <p style="margin:0 0 18px;font-size:14px;color:#5d6e73">Status / Trạng thái: <b style="color:#b07d1f">{{status_en}} / {{status_vi}}</b></p>
+
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px">
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb;width:42%"><b>Full Name</b><br><span style="color:#7a8b90;font-size:12px">Họ và tên</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{name}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Email</b><br><span style="color:#7a8b90;font-size:12px">Email</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{email}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Phone</b><br><span style="color:#7a8b90;font-size:12px">Số điện thoại</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{phone}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Package</b><br><span style="color:#7a8b90;font-size:12px">Gói lặn</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{package}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Travel Date</b><br><span style="color:#7a8b90;font-size:12px">Ngày khởi hành</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{travel_date}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Time Slot</b><br><span style="color:#7a8b90;font-size:12px">Khung giờ</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{time_slot}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Guests</b><br><span style="color:#7a8b90;font-size:12px">Số lượng khách</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{guests}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Total Amount</b><br><span style="color:#7a8b90;font-size:12px">Tổng thanh toán</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>{{amount}}</b></td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb"><b>Payment Method</b><br><span style="color:#7a8b90;font-size:12px">Phương thức thanh toán</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb">{{payment_method}}</td></tr>
+          <tr><td style="padding:12px 0;border-top:1px solid #e3e9eb;border-bottom:1px solid #e3e9eb"><b>Notes</b><br><span style="color:#7a8b90;font-size:12px">Yêu cầu đặc biệt</span></td><td style="padding:12px 0;border-top:1px solid #e3e9eb;border-bottom:1px solid #e3e9eb">{{notes}}</td></tr>
+        </table>
+
+        {{{pay_block}}}
+
+        <div style="margin-top:24px;padding:14px 18px;background:#fff8e6;border:1px solid #f0dca0;border-radius:10px;font-size:13px;line-height:1.6;color:#7a4b0c">
+          Please double-check all details. If you notice any discrepancies, please inform our support team within 24 hours.<br>
+          Vui lòng kiểm tra lại thông tin. Nếu có sai sót, hãy báo cho SeaCrates trong vòng 24 giờ.
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="background:#f5f8f9;padding:16px 32px;font-size:12px;color:#7a8b90;text-align:center">
+        SeaCrates · seacratesinc@gmail.com
+      </td>
+    </tr>
+  </table>
+</div>
